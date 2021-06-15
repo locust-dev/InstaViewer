@@ -63,6 +63,9 @@ class ProfileViewController: UIViewController {
             if let data = try? Data(contentsOf: url) {
                 guard let image = UIImage(data: data) else { return }
                 images.append(image)
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
             }
         }
     }
@@ -84,7 +87,7 @@ class ProfileViewController: UIViewController {
 // MARK: - Collection view configure
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        accountPosts?.posts.count ?? 1
+        images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
