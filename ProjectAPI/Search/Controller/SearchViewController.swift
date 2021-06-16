@@ -21,6 +21,10 @@ class SearchViewController: UIViewController {
         
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
     
 }
 
@@ -30,6 +34,8 @@ extension SearchViewController: UITableViewDelegate {
         guard let users = searchedResults else { return }
         accountGlobal = users[indexPath.row].username
     }
+    
+    
 }
 
 // MARK: - Table View Data Source
@@ -45,12 +51,10 @@ extension SearchViewController: UITableViewDataSource {
         if !profileAvatars.isEmpty {
             cell.profileImage.image = profileAvatars[indexPath.row]
         }
-        
         cell.profileName.text = results[indexPath.row].username
+        cell.profileFullname.text = results[indexPath.row].fullname
         return cell
     }
-    
-    
 }
 
 // MARK: - Configure Search Bar

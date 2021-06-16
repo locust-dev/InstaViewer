@@ -16,5 +16,6 @@ class SearchTableViewCell: UITableViewCell {
     }
     
     @IBOutlet weak var profileName: UILabel!
-
+    @IBOutlet weak var profileFullname: UILabel!
+    
 }
