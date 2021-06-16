@@ -10,7 +10,8 @@ struct Account {
     let userName: String
     let biography: String
     let profileImage: String
-    let id: String
+    let id: Int
+    let isPrivate: Bool
     
     let followed: Int
     var followedString: String {
@@ -28,13 +29,14 @@ struct Account {
     }
     
     init?(accountData: AccountData) {
-        fullName = accountData.fullName ?? "Unknown"
-        userName = accountData.userName ?? "Unknown"
-        biography = accountData.biography ?? "Unknown"
-        profileImage = accountData.profileImage ?? "Unknown"
-        followed = accountData.followed?.count ?? 0
-        follow = accountData.follow?.count ?? 0
-        postsCount = accountData.postsCount?.count ?? 0
-        id = accountData.id ?? "Unknown"
+        fullName = accountData.data.fullName ?? "Unknown"
+        userName = accountData.data.userName ?? "Unknown"
+        biography = accountData.data.biography ?? "Unknown"
+        profileImage = accountData.data.profileImage?.hd ?? "Unknown"
+        followed = accountData.data.figures?.followers ?? 0
+        follow = accountData.data.figures?.followings ?? 0
+        postsCount = accountData.data.figures?.posts ?? 0
+        id = accountData.data.id ?? 0
+        isPrivate = accountData.data.isPrivate ?? true
     }
 }

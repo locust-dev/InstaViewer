@@ -8,7 +8,7 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-
+    
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var profileAvatar: UIImageView!
     @IBOutlet weak var postsCount: UILabel!
@@ -28,7 +28,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func fetchPosts() {
-        NetworkService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
+        NetworkAccountService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
             self.accountPosts = loadedPosts
             self.fetchImagesFromPosts()
             DispatchQueue.main.async {
@@ -38,7 +38,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func fetchAccount() {
-        NetworkService.shared.fetchAccountInfo(from: urlForAccountInfo) { account in
+        NetworkAccountService.shared.fetchAccountInfo(from: urlForAccountInfo) { account in
             guard let account = account else { return }
             self.account = account
             DispatchQueue.main.async {
@@ -49,8 +49,6 @@ class ProfileViewController: UIViewController {
                 self.biography.text = account.biography
                 self.title = "\(account.userName)"
             }
-            postsCountGlobal = account.postsCount
-            idGlobal = account.id
             self.fetchProfileImage()
             self.fetchPosts()
         }
@@ -58,8 +56,9 @@ class ProfileViewController: UIViewController {
     
     private func fetchImagesFromPosts() {
         guard let accountPosts = accountPosts else { return }
-        for post in accountPosts.posts {
-            guard let url = URL(string: post.postImage) else { return }
+        guard let posts = accountPosts.posts else { return }
+        for post in posts {
+            guard let url = URL(string: post.squarePostImage.last ?? "") else { return }
             if let data = try? Data(contentsOf: url) {
                 guard let image = UIImage(data: data) else { return }
                 images.append(image)
@@ -84,7 +83,7 @@ class ProfileViewController: UIViewController {
     }
 }
 
-// MARK: - Collection view configure
+// MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         images.count
@@ -102,7 +101,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 }
 
-// MARK: - FlowLayout
+// MARK: - Collection view FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = 3

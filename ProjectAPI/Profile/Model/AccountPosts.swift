@@ -6,27 +6,57 @@
 //
 
 struct AccountPosts {
-    let count: Int
-    var posts = [Post]()
+    var posts: [AccountPost]? = []
+    let hasNextPage: Bool?
+    let pageId: String?
     
     init?(accountPostsData: AccountPostsData) {
-        count = accountPostsData.count ?? 0
-        posts = parsePosts(postsData: accountPostsData)
-    }
-    
-    private mutating func parsePosts(postsData: AccountPostsData) -> [Post] {
-        var parsedPosts = [Post]()
-        guard let edges = postsData.edges else { return [] }
-        
-        for edge in edges {
-            guard let postImage = edge.node?.postImage else { return [] }
-            let post = Post(postImage: postImage)
-            parsedPosts.append(post)
-        }
-        return parsedPosts
+        posts = AccountPost.getPost(postsData: accountPostsData)
+        hasNextPage = accountPostsData.meta.hasNext
+        pageId = accountPostsData.meta.pageId
     }
 }
 
-struct Post {
-    let postImage: String
+struct AccountPost {
+    let originalPostImage: String
+    let squarePostImage: [String]
+    let likesCount: Int
+    let comments: [Comment]?
+    
+    static func getPost(postsData: AccountPostsData?) -> [AccountPost]? {
+        var posts = [AccountPost]()
+        guard let data = postsData else { return nil }
+        guard let postsList = data.data else { return nil }
+        
+        for post in postsList {
+            let newPost = AccountPost(
+                originalPostImage: post.images?.original?.high ?? "",
+                squarePostImage: post.images?.square ?? [],
+                likesCount: post.figures?.likesCount ?? 0,
+                comments: Comment.getComments(commentsData: post.comments ?? nil)  )
+            posts.append(newPost)
+        }
+        return posts
+    }
+    
 }
+
+
+struct Comment {
+    let text: String
+    let owner: String
+    
+    static func getComments(commentsData: CommentsData?) -> [Comment]? {
+        var comments = [Comment]()
+        guard let data = commentsData else { return nil }
+        guard let list = data.list else { return nil }
+        
+        for comment in list {
+            guard let text = comment.text, let owner = comment.owner?.username else { return comments }
+            let newComment = Comment(text: text, owner: owner)
+            comments.append(newComment)
+        }
+        return comments
+    }
+}
+
