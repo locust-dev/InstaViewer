@@ -12,7 +12,7 @@ class NetworkService {
     static let shared = NetworkService()
     private init() {}
     
-    func createSession(url: URL, with completion: @escaping (Data) -> Void) {
+    func createRequest(url: URL, with completion: @escaping (Data) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = headers

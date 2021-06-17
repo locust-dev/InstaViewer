@@ -5,32 +5,34 @@
 //  Created by Илья Тюрин on 13.06.2021.
 //
 
-struct AccountPosts {
-    var posts: [AccountPost]? = []
+struct Posts {
+    var posts: [Post]? = []
     let hasNextPage: Bool?
     let pageId: String?
     
-    init?(accountPostsData: AccountPostsData) {
-        posts = AccountPost.getPost(postsData: accountPostsData)
-        hasNextPage = accountPostsData.meta.hasNext
-        pageId = accountPostsData.meta.pageId
+    init?(postsData: PostsData) {
+        posts = Post.getPost(postsData: postsData)
+        hasNextPage = postsData.meta.hasNext
+        pageId = postsData.meta.pageId
     }
 }
 
-struct AccountPost {
+struct Post {
     let originalPostImage: String
+    let thumbnailPostImage: String
     let squarePostImage: [String]
     let likesCount: Int
     let comments: [Comment]?
     
-    static func getPost(postsData: AccountPostsData?) -> [AccountPost]? {
-        var posts = [AccountPost]()
+    static func getPost(postsData: PostsData?) -> [Post]? {
+        var posts = [Post]()
         guard let data = postsData else { return nil }
         guard let postsList = data.data else { return nil }
         
         for post in postsList {
-            let newPost = AccountPost(
+            let newPost = Post(
                 originalPostImage: post.images?.original?.high ?? "",
+                thumbnailPostImage: post.images?.thumbnail ?? "",
                 squarePostImage: post.images?.square ?? [],
                 likesCount: post.figures?.likesCount ?? 0,
                 comments: Comment.getComments(commentsData: post.comments ?? nil)  )

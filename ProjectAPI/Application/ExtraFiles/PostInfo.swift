@@ -9,6 +9,7 @@ var idGlobal = "3248383724"
 var accountGlobal = "turinz"
 var searchUserGlobal = ""
 var pageIdGlobal = ""
+var hashTagForTrendGlobal = "popular"
 
 let headers = [
     "x-rapidapi-key": "a047482573msh2fe19b21b962d48p17bb9djsn2904ff2d0097",
@@ -25,4 +26,8 @@ var urlForPosts: String {
 
 var urlForSearch: String {
     "https://instagram85.p.rapidapi.com/account/search/\(searchUserGlobal)"
+}
+
+var urlForTrends: String {
+    "https://instagram85.p.rapidapi.com/tag/\(hashTagForTrendGlobal)/feed"
 }

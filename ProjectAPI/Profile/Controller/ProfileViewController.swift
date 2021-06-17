@@ -17,9 +17,9 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var fullName: UILabel!
     @IBOutlet weak var biography: UILabel!
     
-    var account: Account?
-    var accountPosts: AccountPosts?
-    var images = [UIImage]()
+    private var account: Account?
+    private var accountPosts: Posts?
+    private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +58,7 @@ class ProfileViewController: UIViewController {
         guard let accountPosts = accountPosts else { return }
         guard let posts = accountPosts.posts else { return }
         for post in posts {
-            guard let url = URL(string: post.squarePostImage.last ?? "") else { return }
+            guard let url = URL(string: post.squarePostImage.first ?? "") else { return }
             if let data = try? Data(contentsOf: url) {
                 guard let image = UIImage(data: data) else { return }
                 images.append(image)
@@ -81,6 +81,15 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
+        guard let detailVC = segue.destination as? DetailPostViewController else { return }
+        guard let posts = accountPosts?.posts else { return }
+        detailVC.post = posts[indexPath.item]
+        detailVC.username = account?.userName
+        detailVC.profileImage.image = profileAvatar.image
+    }
 }
 
 // MARK: - Collection view Delegate & DataSourse
@@ -99,6 +108,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         cell.image.image = images[indexPath.item]
         return cell
     }
+    
 }
 
 // MARK: - Collection view FlowLayout

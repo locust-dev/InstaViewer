@@ -12,20 +12,13 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
-    var searchedResults: [SearchedUser]?
-    var profileAvatars = [UIImage]()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        
-    }
-    
+    private var searchedResults: [SearchedUser]?
+    private var profileAvatars = [UIImage]()
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         view.endEditing(true)
     }
-    
 }
 
 // MARK: - Table View Delegate
@@ -34,8 +27,6 @@ extension SearchViewController: UITableViewDelegate {
         guard let users = searchedResults else { return }
         accountGlobal = users[indexPath.row].username
     }
-    
-    
 }
 
 // MARK: - Table View Data Source
@@ -59,9 +50,16 @@ extension SearchViewController: UITableViewDataSource {
 
 // MARK: - Configure Search Bar
 extension SearchViewController: UISearchBarDelegate {
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchUserGlobal = searchBar.text ?? ""
+        view.endEditing(true)
+        showResults()
+    }
+}
+
+// MARK: Private Methods
+extension SearchViewController {
+    func showResults() {
         NetworkSearchService.shared.fetchSearchedUsers(url: urlForSearch) { results in
             guard let searchResults = results else { return }
             self.searchedResults = searchResults.results

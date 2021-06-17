@@ -5,12 +5,12 @@
 //  Created by Илья Тюрин on 11.06.2021.
 //
 
-struct AccountPostsData: Decodable {
-    let data: [Post]?
+struct PostsData: Decodable {
+    let data: [PostData]?
     let meta: Meta
 }
 
-struct Post: Decodable {
+struct PostData: Decodable {
     let images: PostImage?
     let figures: PostFigures?
     let comments: CommentsData?
@@ -40,6 +40,7 @@ struct PostFigures: Decodable {
 struct PostImage: Decodable {
     let original: OriginalImage?
     let square: [String]?
+    let thumbnail: String?
 }
 
 struct OriginalImage: Decodable {

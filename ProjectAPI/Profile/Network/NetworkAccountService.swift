@@ -14,7 +14,7 @@ class NetworkAccountService {
     
     func fetchAccountInfo(from url: String, with completion: @escaping (Account?) -> Void) {
         guard let url = URL(string: url) else { return }
-        NetworkService.shared.createSession(url: url) { data in
+        NetworkService.shared.createRequest(url: url) { data in
             do {
                 let accountData = try JSONDecoder().decode(AccountData.self, from: data)
                 guard let account = Account(accountData: accountData) else {
@@ -28,7 +28,7 @@ class NetworkAccountService {
         }
     }
     
-    func fetchProfilePosts(from url: String, with completion: @escaping (AccountPosts?) -> Void) {
+    func fetchProfilePosts(from url: String, with completion: @escaping (Posts?) -> Void) {
         guard let url = URL(string: url) else { return }
         
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -37,10 +37,10 @@ class NetworkAccountService {
             URLQueryItem(name: "pageId", value: pageIdGlobal)
         ]
         
-        NetworkService.shared.createSession(url: (components?.url)!) { data in
+        NetworkService.shared.createRequest(url: (components?.url)!) { data in
             do {
-                let postsData = try JSONDecoder().decode(AccountPostsData.self, from: data)
-                guard let accountPosts = AccountPosts(accountPostsData: postsData) else {
+                let postsData = try JSONDecoder().decode(PostsData.self, from: data)
+                guard let accountPosts = Posts(postsData: postsData) else {
                     completion(nil)
                     return
                 }
