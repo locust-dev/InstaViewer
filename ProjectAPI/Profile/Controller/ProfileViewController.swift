@@ -88,7 +88,7 @@ class ProfileViewController: UIViewController {
         guard let posts = accountPosts?.posts else { return }
         detailVC.post = posts[indexPath.item]
         detailVC.username = account?.userName
-        detailVC.profileImage.image = profileAvatar.image
+        detailVC.avatar = account?.profileImage
     }
 }
 

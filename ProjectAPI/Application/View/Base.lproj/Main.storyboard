@@ -328,7 +328,8 @@
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nUJ-h3-bqX">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="nUJ-h3-bqX" secondAttribute="height" multiplier="1:1" id="pDR-gY-WfV"/>
+                                            <constraint firstAttribute="height" constant="50" id="8lY-kk-1b3"/>
+                                            <constraint firstAttribute="width" constant="50" id="T4Z-9E-Bgm"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="turinz" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s4M-7N-5je">
