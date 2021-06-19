@@ -25,6 +25,13 @@ class TrendPostsViewController: UIViewController {
         view.endEditing(true)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let detailPostVC = segue.destination as? DetailPostViewController else { return }
+        guard let posts = posts else { return }
+        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
+        detailPostVC.post = posts.posts?[indexPath.item]
+    }
+    
     private func fetchPosts() {
         NetworkTrendPosts.shared.fetchTrendPosts(from: urlForTrends) { loadedPosts in
             self.posts = loadedPosts

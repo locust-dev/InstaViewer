@@ -15,12 +15,13 @@ class DetailPostViewController: UIViewController {
     @IBOutlet weak var likesCount: UILabel!
     
     var post: Post!
-    var username: String!
+    var username: String?
     var avatar: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         usernameLabel.text = username
+        likesCount.text = "Likes: \(post.likesCount)"
         fetchOriginalImage()
         fetchProfileImage()
     }

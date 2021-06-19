@@ -99,7 +99,7 @@
                                             <outlet property="profileFullname" destination="1Tx-ZB-5Bo" id="g5S-et-vUi"/>
                                             <outlet property="profileImage" destination="w9L-4J-uXk" id="SYZ-hM-pki"/>
                                             <outlet property="profileName" destination="j8c-Gb-rVv" id="H0e-oq-TBu"/>
-                                            <segue destination="BYZ-38-t0r" kind="show" trigger="accessoryAction" id="nWY-sy-SVK"/>
+                                            <segue destination="BYZ-38-t0r" kind="show" id="2CR-xY-HVM"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -376,7 +376,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fab-Gu-PNj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2289.8550724637685" y="105.80357142857143"/>
+            <point key="canvasLocation" x="2362" y="106"/>
         </scene>
         <!--Trend Posts View Controller-->
         <scene sceneID="unh-Gm-huO">
@@ -422,6 +422,7 @@
                                         </collectionViewCellContentView>
                                         <connections>
                                             <outlet property="image" destination="BhM-Ih-XSL" id="gaw-lW-bf2"/>
+                                            <segue destination="obh-gx-9gY" kind="show" id="dzf-Fu-qOf"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -474,7 +475,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="qse-jA-UPN"/>
+        <segue reference="dzf-Fu-qOf"/>
+        <segue reference="2CR-xY-HVM"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>

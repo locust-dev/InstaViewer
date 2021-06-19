@@ -12,7 +12,7 @@ var pageIdGlobal = ""
 var hashTagForTrendGlobal = "popular"
 
 let headers = [
-    "x-rapidapi-key": "a047482573msh2fe19b21b962d48p17bb9djsn2904ff2d0097",
+    "x-rapidapi-key": "02fcc3be9bmsh09fd67bfe08aa86p133277jsna19702724b41",
     "x-rapidapi-host": "instagram85.p.rapidapi.com"
 ]
 
