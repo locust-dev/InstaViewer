@@ -257,8 +257,6 @@
 		E9DDC8E2267B9B0D001D777B /* PostDetail */ = {
 			isa = PBXGroup;
 			children = (
-				E9DDC8E5267B9B2B001D777B /* Model */,
-				E9DDC8E4267B9B27001D777B /* View */,
 				E9DDC8E3267B9B21001D777B /* Controller */,
 			);
 			path = PostDetail;
@@ -270,20 +268,6 @@
 				E9DDC8E6267B9B43001D777B /* DetailPostViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		E9DDC8E4267B9B27001D777B /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		E9DDC8E5267B9B2B001D777B /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		E9E7FC5A2672678300B29C90 = {

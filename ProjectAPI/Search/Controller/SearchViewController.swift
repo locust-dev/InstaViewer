@@ -14,11 +14,6 @@ class SearchViewController: UIViewController {
     
     private var searchedResults: [SearchedUser]?
     private var profileAvatars = [UIImage]()
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        view.endEditing(true)
-    }
 }
 
 // MARK: - Table View Delegate
@@ -41,7 +36,10 @@ extension SearchViewController: UITableViewDataSource {
         
         if !profileAvatars.isEmpty {
             cell.profileImage.image = profileAvatars[indexPath.row]
+        } else {
+            cell.profileImage.image = UIImage(systemName: "xmark")
         }
+        
         cell.profileName.text = results[indexPath.row].username
         cell.profileFullname.text = results[indexPath.row].fullname
         return cell
@@ -53,33 +51,40 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchUserGlobal = searchBar.text ?? ""
         view.endEditing(true)
-        showResults()
+        DispatchQueue.global().async {
+            self.searchUsers()
+        }
     }
 }
 
 // MARK: Private Methods
 extension SearchViewController {
-    func showResults() {
+    private func searchUsers() {
         NetworkSearchService.shared.fetchSearchedUsers(url: urlForSearch) { results in
             guard let searchResults = results else { return }
             self.searchedResults = searchResults.results
-            DispatchQueue.main.async {
-                guard let users = self.searchedResults else { return }
-                for user in users {
-                    NetworkSearchService.shared.fetchSearchedUserAvatar(user: user) { imageData in
-                        guard let data = imageData else {
-                            self.profileAvatars.append(UIImage(systemName: "xmark")!)
-                            return
-                        }
-                        guard let image = UIImage(data: data) else {
-                            self.profileAvatars.append(UIImage(systemName: "xmark")!)
-                            return
-                        }
-                        self.profileAvatars.append(image)
-                    }
-                }
-                self.tableView.reloadData()
-            }
+            self.fetchAvatars(from: searchResults.results)
         }
     }
+    
+    private func fetchAvatars(from users: [SearchedUser]) {
+        profileAvatars.removeAll()
+        for user in users {
+            NetworkSearchService.shared.fetchSearchedUserAvatar(user: user) { imageData in
+                guard let data = imageData else {
+                    self.profileAvatars.append(UIImage(systemName: "xmark")!)
+                    return
+                }
+                guard let image = UIImage(data: data) else {
+                    self.profileAvatars.append(UIImage(systemName: "xmark")!)
+                    return
+                }
+                self.profileAvatars.append(image)
+            }
+        }
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
 }
