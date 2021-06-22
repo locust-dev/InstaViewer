@@ -142,6 +142,12 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvG-CL-kG0">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This account is private." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwH-89-oO0">
+                                        <rect key="frame" x="20" y="250" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2o6-Kq-Kdx">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                                         <subviews>
@@ -278,8 +284,11 @@
                                     </stackView>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="Fj8-3b-CpC" firstAttribute="trailing" secondItem="VwH-89-oO0" secondAttribute="trailing" constant="20" id="5vG-gn-TZT"/>
                                     <constraint firstItem="2o6-Kq-Kdx" firstAttribute="width" secondItem="Fj8-3b-CpC" secondAttribute="width" id="DE8-AZ-eCp"/>
+                                    <constraint firstItem="VwH-89-oO0" firstAttribute="leading" secondItem="Fj8-3b-CpC" secondAttribute="leading" constant="20" id="HgW-CO-7tS"/>
                                     <constraint firstItem="2o6-Kq-Kdx" firstAttribute="trailing" secondItem="AnT-3X-9hb" secondAttribute="trailing" id="RRq-OK-2YP"/>
+                                    <constraint firstItem="VwH-89-oO0" firstAttribute="top" secondItem="v0R-Gm-XOR" secondAttribute="bottom" constant="50" id="XfZ-iM-pCx"/>
                                     <constraint firstItem="2o6-Kq-Kdx" firstAttribute="bottom" secondItem="AnT-3X-9hb" secondAttribute="bottom" id="hzr-js-fLf"/>
                                     <constraint firstItem="2o6-Kq-Kdx" firstAttribute="top" secondItem="AnT-3X-9hb" secondAttribute="top" id="nM3-VK-Lla"/>
                                     <constraint firstItem="2o6-Kq-Kdx" firstAttribute="height" secondItem="Fj8-3b-CpC" secondAttribute="height" priority="750" id="wfu-cF-nuH"/>
@@ -290,7 +299,7 @@
                             </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="leading" secondItem="vvG-CL-kG0" secondAttribute="leading" id="Emh-uX-4T2"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="vvG-CL-kG0" secondAttribute="top" id="FZR-ZO-rIv"/>
@@ -306,6 +315,7 @@
                         <outlet property="follow" destination="b0t-cB-ieQ" id="c4o-Wd-QM4"/>
                         <outlet property="followed" destination="DER-Ol-0Zl" id="UZy-iA-SSj"/>
                         <outlet property="fullName" destination="7YM-bV-QB5" id="TTw-MM-A7L"/>
+                        <outlet property="isPrivateLabel" destination="VwH-89-oO0" id="WMq-wy-l8w"/>
                         <outlet property="postsCount" destination="EHj-7E-8xd" id="7fI-lL-DTC"/>
                         <outlet property="profileAvatar" destination="Dsa-wN-SS0" id="oUE-VJ-NjS"/>
                     </connections>
@@ -475,7 +485,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="dzf-Fu-qOf"/>
+        <segue reference="iqz-oR-ze2"/>
         <segue reference="2CR-xY-HVM"/>
     </inferredMetricsTieBreakers>
     <resources>

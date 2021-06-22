@@ -34,14 +34,16 @@ extension SearchViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SearchTableViewCell
         guard let results = searchedResults else { return cell }
         
-        if !profileAvatars.isEmpty {
+        if profileAvatars.count == searchedResults?.count {
             cell.profileImage.image = profileAvatars[indexPath.row]
+            cell.profileName.text = results[indexPath.row].username
+            cell.profileFullname.text = results[indexPath.row].fullname
         } else {
             cell.profileImage.image = UIImage(systemName: "xmark")
+            cell.profileName.text = ""
+            cell.profileFullname.text = ""
         }
         
-        cell.profileName.text = results[indexPath.row].username
-        cell.profileFullname.text = results[indexPath.row].fullname
         return cell
     }
 }

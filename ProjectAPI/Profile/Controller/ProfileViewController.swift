@@ -16,6 +16,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var follow: UILabel!
     @IBOutlet weak var fullName: UILabel!
     @IBOutlet weak var biography: UILabel!
+    @IBOutlet weak var isPrivateLabel: UILabel!
     
     private var account: Account?
     private var accountPosts: Posts?
@@ -25,6 +26,15 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         fetchAccount()
         profileAvatar.layer.cornerRadius = profileAvatar.frame.height / 2
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
+        guard let detailVC = segue.destination as? DetailPostViewController else { return }
+        guard let posts = accountPosts?.posts else { return }
+        detailVC.post = posts[indexPath.item]
+        detailVC.username = account?.userName
+        detailVC.avatar = account?.profileImage
     }
     
     private func fetchPosts() {
@@ -42,6 +52,10 @@ class ProfileViewController: UIViewController {
             guard let account = account else { return }
             self.account = account
             DispatchQueue.main.async {
+                if account.isPrivate {
+                    self.isPrivateLabel.isHidden = false
+                    self.collectionView.isHidden = true
+                }
                 self.postsCount.text = account.postsCountString
                 self.followed.text = account.followedString
                 self.follow.text = account.followString
@@ -82,14 +96,7 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
-        guard let detailVC = segue.destination as? DetailPostViewController else { return }
-        guard let posts = accountPosts?.posts else { return }
-        detailVC.post = posts[indexPath.item]
-        detailVC.username = account?.userName
-        detailVC.avatar = account?.profileImage
-    }
+    
 }
 
 // MARK: - Collection view Delegate & DataSourse
