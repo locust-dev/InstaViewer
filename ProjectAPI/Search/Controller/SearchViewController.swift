@@ -53,6 +53,8 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchUserGlobal = searchBar.text ?? ""
         indicator.startAnimating()
+        searchedResults?.removeAll()
+        tableView.reloadData()
         view.endEditing(true)
         DispatchQueue.global().async {
             self.searchUsers()
