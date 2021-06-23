@@ -11,9 +11,11 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     private var searchedResults: [SearchedUser]?
     private var profileAvatars = [UIImage]()
+    
 }
 
 // MARK: - Table View Delegate
@@ -36,14 +38,12 @@ extension SearchViewController: UITableViewDataSource {
         
         if profileAvatars.count == searchedResults?.count {
             cell.profileImage.image = profileAvatars[indexPath.row]
-            cell.profileName.text = results[indexPath.row].username
-            cell.profileFullname.text = results[indexPath.row].fullname
         } else {
-            cell.profileImage.image = UIImage(systemName: "xmark")
-            cell.profileName.text = ""
-            cell.profileFullname.text = ""
+            cell.profileImage.image = UIImage(named: "nullProfileImage")
         }
         
+        cell.profileName.text = results[indexPath.row].username
+        cell.profileFullname.text = results[indexPath.row].fullname
         return cell
     }
 }
@@ -52,6 +52,7 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchUserGlobal = searchBar.text ?? ""
+        indicator.startAnimating()
         view.endEditing(true)
         DispatchQueue.global().async {
             self.searchUsers()
@@ -65,6 +66,10 @@ extension SearchViewController {
         NetworkSearchService.shared.fetchSearchedUsers(url: urlForSearch) { results in
             guard let searchResults = results else { return }
             self.searchedResults = searchResults.results
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.indicator.stopAnimating()
+            }
             self.fetchAvatars(from: searchResults.results)
         }
     }

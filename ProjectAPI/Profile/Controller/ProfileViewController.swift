@@ -9,8 +9,11 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    @IBOutlet weak var indicatorForInfo: UIActivityIndicatorView!
+    @IBOutlet weak var accountInfo: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var profileAvatar: UIImageView!
+    
     @IBOutlet weak var postsCount: UILabel!
     @IBOutlet weak var followed: UILabel!
     @IBOutlet weak var follow: UILabel!
@@ -25,6 +28,8 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchAccount()
+        indicatorForInfo.startAnimating()
+        accountInfo.isHidden = true
         profileAvatar.layer.cornerRadius = profileAvatar.frame.height / 2
     }
     
@@ -41,9 +46,6 @@ class ProfileViewController: UIViewController {
         NetworkAccountService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
             self.accountPosts = loadedPosts
             self.fetchImagesFromPosts()
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
         }
     }
     
@@ -52,6 +54,8 @@ class ProfileViewController: UIViewController {
             guard let account = account else { return }
             self.account = account
             DispatchQueue.main.async {
+                self.indicatorForInfo.stopAnimating()
+                self.accountInfo.isHidden = false
                 if account.isPrivate {
                     self.isPrivateLabel.isHidden = false
                     self.collectionView.isHidden = true
