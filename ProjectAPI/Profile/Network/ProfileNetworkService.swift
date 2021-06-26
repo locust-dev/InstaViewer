@@ -1,5 +1,5 @@
 //
-//  NetworkManager.swift
+//  ProfileNetworkService.swift
 //  ProjectAPI
 //
 //  Created by Илья Тюрин on 11.06.2021.
@@ -7,18 +7,17 @@
 
 import Foundation
 
-class NetworkAccountService {
+class ProfileNetworkService {
     
-    static let shared = NetworkAccountService()
+    static let shared = ProfileNetworkService()
     private init() {}
     
-    func fetchAccountInfo(from url: String, with completion: @escaping (Account?) -> Void) {
+    func fetchAccountInfo(from url: String, with completion: @escaping (Account) -> Void) {
         guard let url = URL(string: url) else { return }
         NetworkService.shared.createRequest(url: url) { data in
             do {
                 let accountData = try JSONDecoder().decode(AccountData.self, from: data)
                 guard let account = Account(accountData: accountData) else {
-                    completion(nil)
                     return
                 }
                 completion(account)
@@ -50,4 +49,5 @@ class NetworkAccountService {
             }
         }
     }
+    
 }

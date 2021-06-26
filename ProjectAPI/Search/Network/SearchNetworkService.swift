@@ -1,5 +1,5 @@
 //
-//  NetworkSearchService.swift
+//  SearchNetworkService.swift.swift
 //  ProjectAPI
 //
 //  Created by Илья Тюрин on 16.06.2021.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-class NetworkSearchService {
+class SearchNetworkService {
     
-    static let shared = NetworkSearchService()
+    static let shared = SearchNetworkService()
     private init() {}
     
     func fetchSearchedUsers(url: String, completion: @escaping (SearchResults?) -> Void) {
@@ -28,15 +28,7 @@ class NetworkSearchService {
         }
     }
     
-    func fetchSearchedUserAvatar(user: SearchedUser, completion: @escaping (Data?) -> Void) {
-        NetworkService.shared.fetchImage(url: user.picture ?? "") { imageData in
-            guard let data = imageData else {
-                completion(nil)
-                return
-            }
-            completion(data)
-        }
-    }
+    
     
     
 }

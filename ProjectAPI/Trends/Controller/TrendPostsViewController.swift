@@ -11,12 +11,14 @@ class TrendPostsViewController: UIViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     private var posts: Posts?
     private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        indicator.startAnimating()
         fetchPosts()
     }
     
@@ -33,12 +35,9 @@ class TrendPostsViewController: UIViewController {
     }
     
     private func fetchPosts() {
-        NetworkTrendPosts.shared.fetchTrendPosts(from: urlForTrends) { loadedPosts in
+        TrendsNetworkService.shared.fetchTrendPosts(from: urlForTrends) { loadedPosts in
             self.posts = loadedPosts
             self.fetchImagesFromPosts()
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
         }
     }
     
@@ -46,16 +45,17 @@ class TrendPostsViewController: UIViewController {
         guard let postsData = posts else { return }
         guard let posts = postsData.posts else { return }
         for post in posts {
-            guard let url = URL(string: post.squarePostImage.first ?? "") else { return }
-            if let data = try? Data(contentsOf: url) {
-                guard let image = UIImage(data: data) else { return }
-                images.append(image)
+            NetworkService.shared.fetchImage(url: post.squarePostImage.first ?? "") { imageData in
+                guard let image = UIImage(data: imageData) else { return }
+                self.images.append(image)
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
+                    self.indicator.stopAnimating()
                 }
             }
         }
     }
+    
 }
 
 extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -97,6 +97,13 @@ extension TrendPostsViewController: UICollectionViewDelegateFlowLayout {
 extension TrendPostsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         hashTagForTrendGlobal = searchBar.text ?? ""
+        indicator.startAnimating()
+        images.removeAll()
+        posts = nil
+        collectionView.reloadData()
         view.endEditing(true)
+        DispatchQueue.global().async {
+            self.fetchPosts()
+        }
     }
 }

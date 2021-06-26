@@ -6,13 +6,15 @@
 //
 
 var idGlobal = "3248383724"
-var accountGlobal = "turinz"
+var accountGlobal = "tatiana__park"
 var searchUserGlobal = ""
 var pageIdGlobal = ""
 var hashTagForTrendGlobal = "popular"
+var idConverterGlobal = 0
+var idForStoriesGlobal = 0
 
 let headers = [
-    "x-rapidapi-key": "02fcc3be9bmsh09fd67bfe08aa86p133277jsna19702724b41",
+    "x-rapidapi-key": "f79bc03d6amsh5d44fb71431795ep197f75jsnd033a6e30329",
     "x-rapidapi-host": "instagram85.p.rapidapi.com"
 ]
 
@@ -30,4 +32,12 @@ var urlForSearch: String {
 
 var urlForTrends: String {
     "https://instagram85.p.rapidapi.com/tag/\(hashTagForTrendGlobal)/feed"
+}
+
+var urlForIdConverter: String {
+    "https://instagram85.p.rapidapi.com/convert/\(idConverterGlobal)/username"
+}
+
+var urlForStories: String {
+    "https://instagram85.p.rapidapi.com/account/\(idForStoriesGlobal)/stories"
 }

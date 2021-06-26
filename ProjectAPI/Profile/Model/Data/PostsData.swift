@@ -11,9 +11,17 @@ struct PostsData: Decodable {
 }
 
 struct PostData: Decodable {
+    let ownerId: Int?
     let images: PostImage?
     let figures: PostFigures?
     let comments: CommentsData?
+    
+    enum CodingKeys: String, CodingKey {
+        case ownerId = "owner_id"
+        case images = "images"
+        case figures = "figures"
+        case comments = "comments"
+    }
 }
 
 struct CommentsData: Decodable {

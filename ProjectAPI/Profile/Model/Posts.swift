@@ -22,6 +22,7 @@ struct Post {
     let thumbnailPostImage: String
     let squarePostImage: [String]
     let likesCount: Int
+    let ownerId: Int?
     let comments: [Comment]?
     
     static func getPost(postsData: PostsData?) -> [Post]? {
@@ -35,6 +36,7 @@ struct Post {
                 thumbnailPostImage: post.images?.thumbnail ?? "",
                 squarePostImage: post.images?.square ?? [],
                 likesCount: post.figures?.likesCount ?? 0,
+                ownerId: post.ownerId,
                 comments: Comment.getComments(commentsData: post.comments ?? nil)  )
             posts.append(newPost)
         }

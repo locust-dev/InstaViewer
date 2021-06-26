@@ -23,85 +23,125 @@ class ProfileViewController: UIViewController {
     
     private var account: Account?
     private var accountPosts: Posts?
+    private var stories: [Story]?
     private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchAccount()
-        indicatorForInfo.startAnimating()
-        accountInfo.isHidden = true
         profileAvatar.layer.cornerRadius = profileAvatar.frame.height / 2
+        indicatorForInfo.startAnimating()
+        fetchAccount()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
-        guard let detailVC = segue.destination as? DetailPostViewController else { return }
-        guard let posts = accountPosts?.posts else { return }
-        detailVC.post = posts[indexPath.item]
-        detailVC.username = account?.userName
-        detailVC.avatar = account?.profileImage
-    }
-    
-    private func fetchPosts() {
-        NetworkAccountService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
-            self.accountPosts = loadedPosts
-            self.fetchImagesFromPosts()
+        if segue.identifier == "toStories" {
+            guard let storiesVC = segue.destination as? StoriesViewController else { return }
+            guard let stories = stories else { return }
+            storiesVC.stories = stories
+            storiesVC.username = account?.userName
+        } else {
+            guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
+            guard let detailVC = segue.destination as? DetailPostViewController else { return }
+            guard let posts = accountPosts?.posts else { return }
+            detailVC.post = posts[indexPath.item]
+            detailVC.username = account?.userName
+            detailVC.avatar = account?.profileImage
         }
     }
     
+}
+
+// MARK: - Private methods
+extension ProfileViewController {
+    private func setupStoryBorder() {
+        profileAvatar.layer.borderWidth = 4
+        profileAvatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
+    }
+    
     private func fetchAccount() {
-        NetworkAccountService.shared.fetchAccountInfo(from: urlForAccountInfo) { account in
-            guard let account = account else { return }
+        ProfileNetworkService.shared.fetchAccountInfo(from: urlForAccountInfo) { account in
             self.account = account
+            idForStoriesGlobal = account.id
             DispatchQueue.main.async {
-                self.indicatorForInfo.stopAnimating()
-                self.accountInfo.isHidden = false
-                if account.isPrivate {
-                    self.isPrivateLabel.isHidden = false
-                    self.collectionView.isHidden = true
-                }
-                self.postsCount.text = account.postsCountString
-                self.followed.text = account.followedString
-                self.follow.text = account.followString
-                self.fullName.text = account.fullName
-                self.biography.text = account.biography
-                self.title = "\(account.userName)"
+                self.setupAccountUI()
             }
             self.fetchProfileImage()
+            self.fetchStories()
             self.fetchPosts()
         }
     }
     
-    private func fetchImagesFromPosts() {
-        guard let accountPosts = accountPosts else { return }
-        guard let posts = accountPosts.posts else { return }
-        for post in posts {
-            guard let url = URL(string: post.squarePostImage.first ?? "") else { return }
-            if let data = try? Data(contentsOf: url) {
-                guard let image = UIImage(data: data) else { return }
-                images.append(image)
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
+    private func fetchPosts() {
+        ProfileNetworkService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
+            self.accountPosts = loadedPosts
+            guard let posts = loadedPosts?.posts else { return }
+            for post in posts {
+                NetworkService.shared.fetchImage(url: post.squarePostImage.first ?? "") { imageData in
+                    guard let image = UIImage(data: imageData) else { return }
+                    self.images.append(image)
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
                 }
             }
         }
     }
     
     private func fetchProfileImage() {
-        guard let account = account else {
-            profileAvatar.image = UIImage(systemName: "xmark")
+        guard let avatar = account?.profileImage else {
+            profileAvatar.image = UIImage(systemName: "nullProfileImage")
             return
         }
-        guard let url = URL(string: account.profileImage) else { return }
-        if let data = try? Data(contentsOf: url) {
+        NetworkService.shared.fetchImage(url: avatar) { imageData in
+            guard let image = UIImage(data: imageData) else { return }
             DispatchQueue.main.async {
-                self.profileAvatar.image = UIImage(data: data)
+                self.profileAvatar.image = image
             }
         }
     }
     
+    private func fetchStories() {
+        if idForStoriesGlobal != 0 {
+            StoriesNetworkService.shared.fetchStories(from: urlForStories2) { stories in
+                self.stories = stories
+                DispatchQueue.main.async {
+                    if !stories.isEmpty {
+                        self.setupStoryBorder()
+                        self.setupGestures()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setupAccountUI() {
+        guard let account = account else { return }
+        if account.isPrivate {
+            isPrivateLabel.isHidden = false
+            collectionView.isHidden = true
+        }
+        indicatorForInfo.stopAnimating()
+        accountInfo.isHidden = false
+        postsCount.text = account.postsCountString
+        followed.text = account.followedString
+        follow.text = account.followString
+        fullName.text = account.fullName
+        biography.text = account.biography
+        title = "\(account.userName)"
+    }
+    
+    private func setupGestures() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        profileAvatar.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func tapped() {
+        performSegue(withIdentifier: "toStories", sender: nil)
+    }
     
 }
+
+
 
 // MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -110,7 +150,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCell
         
         if images.isEmpty {
             cell.image.image = UIImage(systemName: "xmark")

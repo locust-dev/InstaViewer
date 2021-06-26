@@ -1,14 +1,14 @@
 //
-//  NetworkTrendPosts.swift
+//  TrendsNetworkService.swift
 //  ProjectAPI
 //
 //  Created by Илья Тюрин on 17.06.2021.
 //
 import Foundation
 
-class NetworkTrendPosts {
+class TrendsNetworkService {
     
-    static let shared = NetworkTrendPosts()
+    static let shared = TrendsNetworkService()
     private init() {}
     
     func fetchTrendPosts(from url: String, with completion: @escaping (Posts?) -> Void) {

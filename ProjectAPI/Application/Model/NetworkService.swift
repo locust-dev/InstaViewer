@@ -26,13 +26,11 @@ class NetworkService {
         }.resume()
     }
     
-    func fetchImage(url: String, completion: @escaping (Data?) -> Void) {
+    func fetchImage(url: String, completion: @escaping (Data) -> Void) {
         guard let url = URL(string: url) else {
-            completion(nil)
             return
         }
         guard let imageData = try? Data(contentsOf: url) else {
-            completion(nil)
             return
         }
         completion(imageData)

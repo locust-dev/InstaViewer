@@ -29,10 +29,10 @@ struct Account {
     }
     
     init?(accountData: AccountData) {
-        fullName = accountData.data.fullName ?? "Unknown"
-        userName = accountData.data.userName ?? "Unknown"
-        biography = accountData.data.biography ?? "Unknown"
-        profileImage = accountData.data.profileImage?.hd ?? "Unknown"
+        fullName = accountData.data.fullName ?? "Null"
+        userName = accountData.data.userName ?? "Null"
+        biography = accountData.data.biography ?? "Null"
+        profileImage = accountData.data.profileImage?.hd ?? "Null"
         followed = accountData.data.figures?.followers ?? 0
         follow = accountData.data.figures?.followings ?? 0
         postsCount = accountData.data.figures?.posts ?? 0

@@ -65,7 +65,7 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: Private Methods
 extension SearchViewController {
     private func searchUsers() {
-        NetworkSearchService.shared.fetchSearchedUsers(url: urlForSearch) { results in
+        SearchNetworkService.shared.fetchSearchedUsers(url: urlForSearch) { results in
             guard let searchResults = results else { return }
             self.searchedResults = searchResults.results
             DispatchQueue.main.async {
@@ -79,12 +79,8 @@ extension SearchViewController {
     private func fetchAvatars(from users: [SearchedUser]) {
         profileAvatars.removeAll()
         for user in users {
-            NetworkSearchService.shared.fetchSearchedUserAvatar(user: user) { imageData in
-                guard let data = imageData else {
-                    self.profileAvatars.append(UIImage(systemName: "xmark")!)
-                    return
-                }
-                guard let image = UIImage(data: data) else {
+            NetworkService.shared.fetchImage(url: user.picture ?? "") { imageData in
+                guard let image = UIImage(data: imageData) else {
                     self.profileAvatars.append(UIImage(systemName: "xmark")!)
                     return
                 }
