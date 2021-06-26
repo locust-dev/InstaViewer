@@ -14,7 +14,7 @@ class StoriesViewController: UICollectionViewController {
     
     var username: String!
     var stories: [Story]!
-    private var thumbnails = [UIImage]()
+    private var thumbnails = [(UIImage, String)]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,8 @@ class StoriesViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! StoriesCell
-        cell.storyThumbnail.image = thumbnails[indexPath.item]
+        let content = thumbnails[indexPath.item]
+        cell.configureCell(content: content)
         return cell
     }
     
@@ -58,10 +59,11 @@ class StoriesViewController: UICollectionViewController {
                 }
                 NetworkService.shared.fetchImage(url: thumbnailUrl) { imageData in
                     guard let image = UIImage(data: imageData) else {
-                        self.thumbnails.append(UIImage(systemName: "xmark")!)
+                        let imageType = (UIImage(systemName: "xmark")!, "none")
+                        self.thumbnails.append(imageType)
                         return
                     }
-                    self.thumbnails.append(image)
+                    self.thumbnails.append((image, story.mediaType))
                     DispatchQueue.main.async {
                         self.collectionView.reloadData()
                     }

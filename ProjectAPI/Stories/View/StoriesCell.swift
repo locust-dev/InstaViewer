@@ -11,4 +11,10 @@ class StoriesCell: UICollectionViewCell {
     
     @IBOutlet weak var storyThumbnail: UIImageView!
     
+    func configureCell(content: (UIImage, String)) {
+        storyThumbnail.layer.cornerRadius = 25
+        storyThumbnail.layer.masksToBounds = true
+        storyThumbnail.image = content.0
+    }
+    
 }
