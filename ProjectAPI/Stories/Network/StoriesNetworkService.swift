@@ -8,10 +8,10 @@
 import Foundation
 
 class StoriesNetworkService {
-    private init() {}
-    static let shared = StoriesNetworkService()
     
-    func createStoriesRequest(url: URL, with completion: @escaping (Data) -> Void) {
+    private init() {}
+    
+    static func createStoriesRequest(url: URL, with completion: @escaping (Data) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = headers2
@@ -25,7 +25,7 @@ class StoriesNetworkService {
         }.resume()
     }
     
-    func fetchStories(from url: String, with completion: @escaping ([Story]) -> Void) {
+    static func fetchStories(from url: String, with completion: @escaping ([Story]) -> Void) {
         guard let url = URL(string: url) else { return }
         
         createStoriesRequest(url: url) { data in

@@ -9,12 +9,11 @@ import Foundation
 
 class ProfileNetworkService {
     
-    static let shared = ProfileNetworkService()
     private init() {}
     
-    func fetchAccountInfo(from url: String, with completion: @escaping (Account) -> Void) {
+    static func fetchAccountInfo(from url: String, with completion: @escaping (Account) -> Void) {
         guard let url = URL(string: url) else { return }
-        NetworkService.shared.createRequest(url: url) { data in
+        NetworkService.getRequest(url: url) { data in
             do {
                 let accountData = try JSONDecoder().decode(AccountData.self, from: data)
                 guard let account = Account(accountData: accountData) else {
@@ -27,7 +26,7 @@ class ProfileNetworkService {
         }
     }
     
-    func fetchProfilePosts(from url: String, with completion: @escaping (Posts?) -> Void) {
+    static func fetchProfilePosts(from url: String, with completion: @escaping (Posts) -> Void) {
         guard let url = URL(string: url) else { return }
         
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -36,13 +35,10 @@ class ProfileNetworkService {
             URLQueryItem(name: "pageId", value: pageIdGlobal)
         ]
         
-        NetworkService.shared.createRequest(url: (components?.url)!) { data in
+        NetworkService.getRequest(url: (components?.url)!) { data in
             do {
                 let postsData = try JSONDecoder().decode(PostsData.self, from: data)
-                guard let accountPosts = Posts(postsData: postsData) else {
-                    completion(nil)
-                    return
-                }
+                guard let accountPosts = Posts(postsData: postsData) else { return }
                 completion(accountPosts)
             } catch let error {
                 print(error)

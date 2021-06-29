@@ -65,30 +65,31 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: Private Methods
 extension SearchViewController {
     private func searchUsers() {
-        SearchNetworkService.shared.fetchSearchedUsers(url: urlForSearch) { results in
-            guard let searchResults = results else { return }
-            self.searchedResults = searchResults.results
+        SearchNetworkService.fetchSearchedUsers(url: urlForSearch) { results in
+            self.searchedResults = results.results
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.indicator.stopAnimating()
             }
-            self.fetchAvatars(from: searchResults.results)
+            self.fetchAvatars(from: results.results)
         }
     }
     
     private func fetchAvatars(from users: [SearchedUser]) {
         profileAvatars.removeAll()
         for user in users {
-            NetworkService.shared.fetchImage(url: user.picture ?? "") { imageData in
-                guard let image = UIImage(data: imageData) else {
-                    self.profileAvatars.append(UIImage(systemName: "xmark")!)
-                    return
+            NetworkService.fetchImage(url: user.picture ?? "") { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        self.profileAvatars.append(image)
+                        self.tableView.reloadData()
+                    case .failure(_):
+                        let image = UIImage(named: "nullProfileImage")!
+                        self.profileAvatars.append(image)
+                    }
                 }
-                self.profileAvatars.append(image)
             }
-        }
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
         }
     }
     

@@ -14,6 +14,8 @@ class DetailPostViewController: UIViewController {
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var postImage: UIImageView!
     
+    @IBOutlet weak var userInfoStack: UIStackView!
+    @IBOutlet weak var contentViewHeight: NSLayoutConstraint!
     @IBOutlet weak var imageHeight: NSLayoutConstraint!
     @IBOutlet weak var indicatorForImage: UIActivityIndicatorView!
     
@@ -39,16 +41,19 @@ class DetailPostViewController: UIViewController {
                 urlForImage = storyImageUrl
             } else { return }
             
-            NetworkService.shared.fetchImage(url: urlForImage) { imageData in
+            NetworkService.fetchImage(url: urlForImage) { result in
                 DispatchQueue.main.async {
-                    guard let image = UIImage(data: imageData) else {
+                    switch result {
+                    case .success(let image):
+                        self.postImage.image = image
+                        let ratio = image.size.width / image.size.height
+                        let heightForImage = self.postImage.frame.width / ratio
+                        let heightForView = heightForImage - self.imageHeight.constant
+                        self.imageHeight.constant = heightForImage
+                        self.contentViewHeight.constant += heightForView
+                    case .failure(_):
                         self.postImage.image = UIImage(systemName: "xmark")
-                        return
                     }
-                    self.postImage.image = image
-                    let ratio = image.size.width / image.size.height
-                    let newHeight = self.postImage.frame.width / ratio
-                    self.imageHeight.constant = newHeight
                     self.view.layoutIfNeeded()
                     self.indicatorForImage.stopAnimating()
                 }
@@ -57,25 +62,27 @@ class DetailPostViewController: UIViewController {
     }
     
     private func fetchProfileImage() {
-        guard let avatar = avatar else {
-            profileImage.image = UIImage(named: "nullProfileImage")
-            return
-        }
-        NetworkService.shared.fetchImage(url: avatar) { imageData in
-            guard let image = UIImage(data: imageData) else { return }
+        NetworkService.fetchImage(url: avatar ?? "") { result in
             DispatchQueue.main.async {
-                self.profileImage.image = image
+                switch result {
+                case .success(let image):
+                    self.profileImage.image = image
+                case .failure(_):
+                    self.profileImage.image = UIImage(named: "nullProfileImage")
+                }
             }
         }
     }
     
     private func setupUI() {
+        indicatorForImage.startAnimating()
         if let post = post {
             likesCount.text = "Likes: \(post.likesCount)"
+            usernameLabel.text = username
+            profileImage.layer.cornerRadius = profileImage.frame.height / 2
+        } else {
+            userInfoStack.isHidden = true
         }
-        usernameLabel.text = username
-        profileImage.layer.cornerRadius = profileImage.frame.height / 2
-        indicatorForImage.startAnimating()
     }
     
 }

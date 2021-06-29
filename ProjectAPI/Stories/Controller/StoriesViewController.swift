@@ -57,15 +57,16 @@ class StoriesViewController: UICollectionViewController {
                 if thumbnailUrl == "" {
                     thumbnailUrl = story.url
                 }
-                NetworkService.shared.fetchImage(url: thumbnailUrl) { imageData in
-                    guard let image = UIImage(data: imageData) else {
-                        let imageType = (UIImage(systemName: "xmark")!, "none")
-                        self.thumbnails.append(imageType)
-                        return
-                    }
-                    self.thumbnails.append((image, story.mediaType))
+                NetworkService.fetchImage(url: thumbnailUrl) { result in
                     DispatchQueue.main.async {
-                        self.collectionView.reloadData()
+                        switch result {
+                        case .success(let image):
+                            self.thumbnails.append((image, story.mediaType))
+                            self.collectionView.reloadData()
+                        case .failure(_):
+                            let imageType = (UIImage(systemName: "xmark")!, "none")
+                            self.thumbnails.append(imageType)
+                        }
                     }
                 }
             }

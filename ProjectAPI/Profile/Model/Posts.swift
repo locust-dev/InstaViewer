@@ -17,6 +17,11 @@ struct Posts {
     }
 }
 
+enum TypeOfPost {
+    case video
+    case image
+}
+
 struct Post {
     let originalPostImage: String
     let thumbnailPostImage: String
@@ -24,6 +29,7 @@ struct Post {
     let likesCount: Int
     let ownerId: Int?
     let comments: [Comment]?
+    let type: TypeOfPost
     
     static func getPost(postsData: PostsData?) -> [Post]? {
         var posts = [Post]()
@@ -31,13 +37,22 @@ struct Post {
         guard let postsList = data.data else { return nil }
         
         for post in postsList {
+            var type: TypeOfPost {
+                switch post.type {
+                case "image": return .image
+                default: return .video
+                }
+            }
+    
             let newPost = Post(
                 originalPostImage: post.images?.original?.high ?? "",
                 thumbnailPostImage: post.images?.thumbnail ?? "",
                 squarePostImage: post.images?.square ?? [],
                 likesCount: post.figures?.likesCount ?? 0,
                 ownerId: post.ownerId,
-                comments: Comment.getComments(commentsData: post.comments ?? nil)  )
+                comments: Comment.getComments(commentsData: post.comments ?? nil),
+                type: type
+            )
             posts.append(newPost)
         }
         return posts

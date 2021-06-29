@@ -8,19 +8,15 @@ import Foundation
 
 class TrendsNetworkService {
     
-    static let shared = TrendsNetworkService()
     private init() {}
     
-    func fetchTrendPosts(from url: String, with completion: @escaping (Posts?) -> Void) {
+    static func fetchTrendPosts(from url: String, with completion: @escaping (Posts) -> Void) {
         guard let url = URL(string: url) else { return }
         
-        NetworkService.shared.createRequest(url: url) { data in
+        NetworkService.getRequest(url: url) { data in
             do {
                 let postsData = try JSONDecoder().decode(PostsData.self, from: data)
-                guard let trendPosts = Posts(postsData: postsData) else {
-                    completion(nil)
-                    return
-                }
+                guard let trendPosts = Posts(postsData: postsData) else { return }
                 completion(trendPosts)
             } catch let error {
                 print(error)

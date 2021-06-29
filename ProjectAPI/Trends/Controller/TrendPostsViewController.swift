@@ -13,12 +13,11 @@ class TrendPostsViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     
-    private var posts: Posts?
+    private var posts: [Post]?
     private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        indicator.startAnimating()
         fetchPosts()
     }
     
@@ -31,26 +30,30 @@ class TrendPostsViewController: UIViewController {
         guard let detailPostVC = segue.destination as? DetailPostViewController else { return }
         guard let posts = posts else { return }
         guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
-        detailPostVC.post = posts.posts?[indexPath.item]
+        detailPostVC.post = posts[indexPath.item]
     }
     
     private func fetchPosts() {
-        TrendsNetworkService.shared.fetchTrendPosts(from: urlForTrends) { loadedPosts in
-            self.posts = loadedPosts
+        indicator.startAnimating()
+        TrendsNetworkService.fetchTrendPosts(from: urlForTrends) { loadedPosts in
+            self.posts = loadedPosts.posts
             self.fetchImagesFromPosts()
         }
     }
     
     private func fetchImagesFromPosts() {
-        guard let postsData = posts else { return }
-        guard let posts = postsData.posts else { return }
+        guard let posts = posts else { return }
         for post in posts {
-            NetworkService.shared.fetchImage(url: post.squarePostImage.first ?? "") { imageData in
-                guard let image = UIImage(data: imageData) else { return }
-                self.images.append(image)
+            NetworkService.fetchImage(url: post.squarePostImage.first ?? "") { result in
                 DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                    self.indicator.stopAnimating()
+                    switch result {
+                    case .success(let image):
+                        self.images.append(image)
+                        self.collectionView.reloadData()
+                        self.indicator.stopAnimating()
+                    case .failure(_):
+                        return
+                    }
                 }
             }
         }

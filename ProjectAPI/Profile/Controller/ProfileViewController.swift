@@ -59,50 +59,54 @@ extension ProfileViewController {
     }
     
     private func fetchAccount() {
-        ProfileNetworkService.shared.fetchAccountInfo(from: urlForAccountInfo) { account in
+        ProfileNetworkService.fetchAccountInfo(from: urlForAccountInfo) { account in
             self.account = account
             idForStoriesGlobal = account.id
             DispatchQueue.main.async {
                 self.setupAccountUI()
             }
-            self.fetchProfileImage()
+            self.fetchProfileImage(avatarUrl: account.profileImage)
             self.fetchStories()
-            self.fetchPosts()
+            //self.fetchPosts()
         }
     }
     
     private func fetchPosts() {
-        ProfileNetworkService.shared.fetchProfilePosts(from: urlForPosts) { loadedPosts in
+        ProfileNetworkService.fetchProfilePosts(from: urlForPosts) { loadedPosts in
             self.accountPosts = loadedPosts
-            guard let posts = loadedPosts?.posts else { return }
+            guard let posts = loadedPosts.posts else { return }
             for post in posts {
-                NetworkService.shared.fetchImage(url: post.squarePostImage.first ?? "") { imageData in
-                    guard let image = UIImage(data: imageData) else { return }
-                    self.images.append(image)
+                NetworkService.fetchImage(url: post.squarePostImage.first ?? "") { result in
                     DispatchQueue.main.async {
-                        self.collectionView.reloadData()
+                        switch result {
+                        case .success(let image):
+                            self.images.append(image)
+                            self.collectionView.reloadData()
+                        case .failure(_):
+                            return
+                        }
                     }
                 }
             }
         }
     }
     
-    private func fetchProfileImage() {
-        guard let avatar = account?.profileImage else {
-            profileAvatar.image = UIImage(systemName: "nullProfileImage")
-            return
-        }
-        NetworkService.shared.fetchImage(url: avatar) { imageData in
-            guard let image = UIImage(data: imageData) else { return }
+    private func fetchProfileImage(avatarUrl: String) {
+        NetworkService.fetchImage(url: avatarUrl) { result in
             DispatchQueue.main.async {
-                self.profileAvatar.image = image
+                switch result {
+                case .success(let image):
+                    self.profileAvatar.image = image
+                case .failure(_):
+                    self.profileAvatar.image = UIImage(systemName: "nullProfileImage")
+                }
             }
         }
     }
     
     private func fetchStories() {
         if idForStoriesGlobal != 0 {
-            StoriesNetworkService.shared.fetchStories(from: urlForStories2) { stories in
+            StoriesNetworkService.fetchStories(from: urlForStories2) { stories in
                 self.stories = stories
                 DispatchQueue.main.async {
                     if !stories.isEmpty {
@@ -120,6 +124,7 @@ extension ProfileViewController {
             isPrivateLabel.isHidden = false
             collectionView.isHidden = true
         }
+        title = "\(account.userName)"
         indicatorForInfo.stopAnimating()
         accountInfo.isHidden = false
         postsCount.text = account.postsCountString
@@ -127,7 +132,6 @@ extension ProfileViewController {
         follow.text = account.followString
         fullName.text = account.fullName
         biography.text = account.biography
-        title = "\(account.userName)"
     }
     
     private func setupGestures() {
@@ -146,14 +150,14 @@ extension ProfileViewController {
 // MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        images.count
+        20
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCell
         
         if images.isEmpty {
-            cell.image.image = UIImage(systemName: "xmark")
+            cell.image.image = UIImage(named: "nullCellImage")
             return cell
         }
         cell.image.image = images[indexPath.item]
