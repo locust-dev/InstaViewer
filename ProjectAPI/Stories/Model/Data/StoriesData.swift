@@ -16,36 +16,3 @@ struct StoryData: Decodable {
     let mediaType: String?
     let url: String?
 }
-
-//struct StoriesData: Decodable {
-//    let data: [[StoryData]]?
-//}
-//
-//struct StoryData: Decodable {
-//    let createdTime: CreatedTime?
-//    let images: Images?
-//    let videos: Videos?
-//
-//    enum CodingKeys: String, CodingKey {
-//        case createdTime = "created_time"
-//        case images = "images"
-//        case videos = "videos"
-//    }
-//}
-//
-//struct CreatedTime: Decodable {
-//    let humanized: String?
-//}
-//
-//struct Images: Decodable {
-//    let thumbnail: String?
-//    let original: ImagesResolution?
-//}
-//
-//struct ImagesResolution: Decodable {
-//    let high: String?
-//}
-//
-//struct Videos: Decodable {
-//    let standard: String?
-//}

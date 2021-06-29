@@ -13,6 +13,7 @@ struct PostsData: Decodable {
 struct PostData: Decodable {
     let ownerId: Int?
     let images: PostImage?
+    let videos: PostVideos?
     let figures: PostFigures?
     let comments: CommentsData?
     let type: String?
@@ -23,6 +24,7 @@ struct PostData: Decodable {
         case figures = "figures"
         case comments = "comments"
         case type = "type"
+        case videos = "videos"
     }
 }
 
@@ -45,6 +47,10 @@ struct PostFigures: Decodable {
     enum CodingKeys: String, CodingKey {
         case likesCount = "likes_count"
     }
+}
+
+struct PostVideos: Decodable {
+    let standard: String?
 }
 
 struct PostImage: Decodable {

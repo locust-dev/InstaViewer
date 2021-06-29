@@ -8,7 +8,7 @@
 import Foundation
 
 let headers2 = [
-    "x-rapidapi-key": "a047482573msh2fe19b21b962d48p17bb9djsn2904ff2d0097",
+    "x-rapidapi-key": "1726cb85d7msh5277960294c269dp11d7c3jsn794686384758",
     "x-rapidapi-host": "instagram-stories1.p.rapidapi.com"
 ]
 

@@ -14,7 +14,7 @@ class StoriesViewController: UICollectionViewController {
     
     var username: String!
     var stories: [Story]!
-    private var thumbnails = [(UIImage, String)]()
+    private var thumbnails = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,17 +28,16 @@ class StoriesViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! StoriesCell
-        let content = thumbnails[indexPath.item]
-        cell.configureCell(content: content)
+        let image = thumbnails[indexPath.item]
+        cell.configureCell(image: image)
+        cell.story = stories[indexPath.item]
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let type = stories[indexPath.item].mediaType
-        let storyUrl = stories[indexPath.item].url
-        
-        if type == "video" {
-            play(urlString: storyUrl)
+        let story = stories[indexPath.item]
+        if story.mediaType == .video {
+            play(urlString: story.url)
         } else {
             performSegue(withIdentifier: "toDetail", sender: nil)
         }
@@ -61,11 +60,10 @@ class StoriesViewController: UICollectionViewController {
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let image):
-                            self.thumbnails.append((image, story.mediaType))
+                            self.thumbnails.append(image)
                             self.collectionView.reloadData()
                         case .failure(_):
-                            let imageType = (UIImage(systemName: "xmark")!, "none")
-                            self.thumbnails.append(imageType)
+                            self.thumbnails.append(UIImage(systemName: "xmark")!)
                         }
                     }
                 }
@@ -75,9 +73,8 @@ class StoriesViewController: UICollectionViewController {
     
     private func play(urlString: String) {
         guard let url = URL(string: urlString) else { return }
-        let player = AVPlayer(url: url)
         let vc = AVPlayerViewController()
-        vc.player = player
+        vc.player = AVPlayer(url: url)
         present(vc, animated: true) {
             vc.player?.play()
         }

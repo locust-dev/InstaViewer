@@ -6,7 +6,7 @@
 //
 
 var idGlobal = "3248383724"
-var accountGlobal = "tatiana__park"
+var accountGlobal = "jakdawis"
 var searchUserGlobal = ""
 var pageIdGlobal = ""
 var hashTagForTrendGlobal = "popular"
@@ -14,7 +14,7 @@ var idConverterGlobal = 0
 var idForStoriesGlobal = 0
 
 let headers = [
-    "x-rapidapi-key": "f79bc03d6amsh5d44fb71431795ep197f75jsnd033a6e30329",
+    "x-rapidapi-key": "1726cb85d7msh5277960294c269dp11d7c3jsn794686384758",
     "x-rapidapi-host": "instagram85.p.rapidapi.com"
 ]
 

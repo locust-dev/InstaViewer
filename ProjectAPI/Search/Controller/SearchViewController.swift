@@ -16,6 +16,12 @@ class SearchViewController: UIViewController {
     private var searchedResults: [SearchedUser]?
     private var profileAvatars = [UIImage]()
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let indexPath = tableView.indexPathForSelectedRow else { return }
+        guard let profileVC = segue.destination as? ProfileViewController else { return }
+        guard let results = searchedResults else { return }
+        profileVC.title = results[indexPath.row].username
+    }
 }
 
 // MARK: - Table View Delegate

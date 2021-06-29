@@ -20,7 +20,6 @@
 		E9DD417A2673A9AF009C9B7E /* ProfileNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DD41792673A9AF009C9B7E /* ProfileNetworkService.swift */; };
 		E9DDC8D4267B8160001D777B /* TrendPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DDC8D3267B8160001D777B /* TrendPostsViewController.swift */; };
 		E9DDC8D6267B8178001D777B /* TrendsNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DDC8D5267B8178001D777B /* TrendsNetworkService.swift */; };
-		E9DDC8DB267B84F0001D777B /* TrendsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DDC8DA267B84F0001D777B /* TrendsCollectionViewCell.swift */; };
 		E9DDC8E7267B9B43001D777B /* DetailPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DDC8E6267B9B43001D777B /* DetailPostViewController.swift */; };
 		E9E7FC672672678300B29C90 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E7FC662672678300B29C90 /* AppDelegate.swift */; };
 		E9E7FC692672678300B29C90 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E7FC682672678300B29C90 /* SceneDelegate.swift */; };
@@ -54,7 +53,6 @@
 		E9DD41792673A9AF009C9B7E /* ProfileNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNetworkService.swift; sourceTree = "<group>"; };
 		E9DDC8D3267B8160001D777B /* TrendPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendPostsViewController.swift; sourceTree = "<group>"; };
 		E9DDC8D5267B8178001D777B /* TrendsNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsNetworkService.swift; sourceTree = "<group>"; };
-		E9DDC8DA267B84F0001D777B /* TrendsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsCollectionViewCell.swift; sourceTree = "<group>"; };
 		E9DDC8E6267B9B43001D777B /* DetailPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPostViewController.swift; sourceTree = "<group>"; };
 		E9E7FC632672678300B29C90 /* ProjectAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9E7FC662672678300B29C90 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -219,7 +217,6 @@
 		E9DDC8CC267B811B001D777B /* Trends */ = {
 			isa = PBXGroup;
 			children = (
-				E9DDC8CF267B8136001D777B /* View */,
 				E9DDC8CE267B8130001D777B /* Controller */,
 				E9DDC8CD267B8128001D777B /* Network */,
 			);
@@ -240,14 +237,6 @@
 				E9DDC8D3267B8160001D777B /* TrendPostsViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		E9DDC8CF267B8136001D777B /* View */ = {
-			isa = PBXGroup;
-			children = (
-				E9DDC8DA267B84F0001D777B /* TrendsCollectionViewCell.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		E9DDC8E2267B9B0D001D777B /* PostDetail */ = {
@@ -469,7 +458,6 @@
 				E9DDC8E7267B9B43001D777B /* DetailPostViewController.swift in Sources */,
 				E9FBC5802676660100A422C3 /* Account.swift in Sources */,
 				E9FBC58226766A8100A422C3 /* Posts.swift in Sources */,
-				E9DDC8DB267B84F0001D777B /* TrendsCollectionViewCell.swift in Sources */,
 				E9E7FC692672678300B29C90 /* SceneDelegate.swift in Sources */,
 				E9B568682676449000397712 /* ProfileViewController.swift in Sources */,
 				E9E7FC8126739DE000B29C90 /* PostsData.swift in Sources */,

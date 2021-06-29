@@ -10,11 +10,23 @@ import UIKit
 class StoriesCell: UICollectionViewCell {
     
     @IBOutlet weak var storyThumbnail: UIImageView!
+    @IBOutlet weak var playIcon: UIImageView!
     
-    func configureCell(content: (UIImage, String)) {
+    var story: Story? {
+        didSet {
+            print(story?.mediaType)
+            if story?.mediaType == .video {
+                playIcon.isHidden = false
+            } else {
+                playIcon.isHidden = true
+            }
+        }
+    }
+    
+    func configureCell(image: UIImage) {
         storyThumbnail.layer.cornerRadius = 25
         storyThumbnail.layer.masksToBounds = true
-        storyThumbnail.image = content.0
+        storyThumbnail.image = image
     }
     
 }

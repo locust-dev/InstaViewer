@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVKit
 
 class TrendPostsViewController: UIViewController {
 
@@ -31,6 +32,15 @@ class TrendPostsViewController: UIViewController {
         guard let posts = posts else { return }
         guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
         detailPostVC.post = posts[indexPath.item]
+    }
+    
+    private func play(urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        let vc = AVPlayerViewController()
+        vc.player = AVPlayer(url: url)
+        present(vc, animated: true) {
+            vc.player?.play()
+        }
     }
     
     private func fetchPosts() {
@@ -67,30 +77,28 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TrendsCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCell
         
         if images.isEmpty {
-            cell.image.image = UIImage(systemName: "xmark")
+            cell.image.image = UIImage(named: "nullCellImage")
             return cell
         }
+        
         cell.image.image = images[indexPath.item]
+        guard let posts = posts else { return cell }
+        cell.post = posts[indexPath.item]
         return cell
     }
+    
 }
 
 // MARK: - Collection view FlowLayout
 extension TrendPostsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow: CGFloat = 3
-        let avalibleWidth = collectionView.frame.width - (itemsPerRow + 1)
-        let widthPerItem = avalibleWidth / itemsPerRow
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        let side = (collectionView.frame.width - 4) / 3
+        return CGSize(width: side, height: side)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        1
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         1
     }

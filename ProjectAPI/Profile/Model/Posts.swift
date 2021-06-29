@@ -26,6 +26,7 @@ struct Post {
     let originalPostImage: String
     let thumbnailPostImage: String
     let squarePostImage: [String]
+    let video: String
     let likesCount: Int
     let ownerId: Int?
     let comments: [Comment]?
@@ -48,6 +49,7 @@ struct Post {
                 originalPostImage: post.images?.original?.high ?? "",
                 thumbnailPostImage: post.images?.thumbnail ?? "",
                 squarePostImage: post.images?.square ?? [],
+                video: post.videos?.standard ?? "",
                 likesCount: post.figures?.likesCount ?? 0,
                 ownerId: post.ownerId,
                 comments: Comment.getComments(commentsData: post.comments ?? nil),

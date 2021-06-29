@@ -18,17 +18,29 @@ struct Stories {
     }
 }
 
+enum StoryType {
+    case video
+    case image
+}
+
 struct Story {
     let thumbnail: String
-    let mediaType: String
+    let mediaType: StoryType
     let url: String
     
     static func getStories(storiesData: StoriesData) -> [Story] {
         var newStories = [Story]()
         guard let stories = storiesData.downloadLinks else { return [] }
         for story in stories {
+            var type: StoryType {
+                switch story.mediaType {
+                case "image": return .image
+                default: return .video
+                }
+            }
+            
             let newStory = Story(thumbnail: story.thumbnail ?? "",
-                                 mediaType: story.mediaType ?? "",
+                                 mediaType: type,
                                  url: story.url ?? "")
             newStories.append(newStory)
         }

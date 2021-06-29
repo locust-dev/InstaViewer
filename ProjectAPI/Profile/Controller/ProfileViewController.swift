@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVKit
 
 class ProfileViewController: UIViewController {
     
@@ -22,7 +23,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var isPrivateLabel: UILabel!
     
     private var account: Account?
-    private var accountPosts: Posts?
+    private var accountPosts: [Post]?
     private var stories: [Story]?
     private var images = [UIImage]()
     
@@ -39,10 +40,10 @@ class ProfileViewController: UIViewController {
             guard let stories = stories else { return }
             storiesVC.stories = stories
             storiesVC.username = account?.userName
-        } else {
+        } else if segue.identifier == "toDetail" {
             guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
             guard let detailVC = segue.destination as? DetailPostViewController else { return }
-            guard let posts = accountPosts?.posts else { return }
+            guard let posts = accountPosts else { return }
             detailVC.post = posts[indexPath.item]
             detailVC.username = account?.userName
             detailVC.avatar = account?.profileImage
@@ -53,6 +54,15 @@ class ProfileViewController: UIViewController {
 
 // MARK: - Private methods
 extension ProfileViewController {
+    private func play(urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        let vc = AVPlayerViewController()
+        vc.player = AVPlayer(url: url)
+        present(vc, animated: true) {
+            vc.player?.play()
+        }
+    }
+    
     private func setupStoryBorder() {
         profileAvatar.layer.borderWidth = 4
         profileAvatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
@@ -67,13 +77,13 @@ extension ProfileViewController {
             }
             self.fetchProfileImage(avatarUrl: account.profileImage)
             self.fetchStories()
-            //self.fetchPosts()
+            self.fetchPosts()
         }
     }
     
     private func fetchPosts() {
         ProfileNetworkService.fetchProfilePosts(from: urlForPosts) { loadedPosts in
-            self.accountPosts = loadedPosts
+            self.accountPosts = loadedPosts.posts
             guard let posts = loadedPosts.posts else { return }
             for post in posts {
                 NetworkService.fetchImage(url: post.squarePostImage.first ?? "") { result in
@@ -150,7 +160,7 @@ extension ProfileViewController {
 // MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        20
+        images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -160,8 +170,23 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
             cell.image.image = UIImage(named: "nullCellImage")
             return cell
         }
+        
         cell.image.image = images[indexPath.item]
+        
+        guard let posts = accountPosts else { return cell }
+        cell.post = posts[indexPath.item]
+        
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let posts = accountPosts else { return }
+        let post = posts[indexPath.item]
+        if post.type == .image {
+            performSegue(withIdentifier: "toDetail", sender: nil)
+        } else {
+            play(urlString: post.video)
+        }
     }
     
 }
@@ -169,16 +194,10 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
 // MARK: - Collection view FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow: CGFloat = 3
-        let avalibleWidth = collectionView.frame.width - (itemsPerRow + 1)
-        let widthPerItem = avalibleWidth / itemsPerRow
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        let side = (collectionView.frame.width - 4) / 3
+        return CGSize(width: side, height: side)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        1
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         1
     }
