@@ -14,7 +14,7 @@ var idConverterGlobal = 0
 var idForStoriesGlobal = 0
 
 let headers = [
-    "x-rapidapi-key": "1726cb85d7msh5277960294c269dp11d7c3jsn794686384758",
+    "x-rapidapi-key": "d9b2b7cb4dmsh880004031408bffp17ea4bjsn3c1c3cab6c71",
     "x-rapidapi-host": "instagram85.p.rapidapi.com"
 ]
 

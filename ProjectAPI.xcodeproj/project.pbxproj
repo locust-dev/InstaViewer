@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E9118004268CB69F0081789B /* SearchStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9118003268CB69F0081789B /* SearchStorageManager.swift */; };
 		E9B568642676369400397712 /* PostInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568632676369400397712 /* PostInfo.swift */; };
 		E9B568662676445B00397712 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568652676445B00397712 /* ImageCell.swift */; };
 		E9B568682676449000397712 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568672676449000397712 /* ProfileViewController.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E9118003268CB69F0081789B /* SearchStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchStorageManager.swift; sourceTree = "<group>"; };
 		E9B568632676369400397712 /* PostInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfo.swift; sourceTree = "<group>"; };
 		E9B568652676445B00397712 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		E9B568672676449000397712 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -107,7 +109,7 @@
 				E9E7FC7D26739DAF00B29C90 /* Model */,
 				E9E7FC7E26739DB400B29C90 /* View */,
 				E9E7FC7F26739DBE00B29C90 /* Controller */,
-				E9E7FC822673A07900B29C90 /* Network */,
+				E9E7FC822673A07900B29C90 /* Service */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -115,6 +117,7 @@
 		E9B5686D267657CA00397712 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				E9DD3F8A268CA21200B27505 /* Extensions */,
 				E9B568622676367700397712 /* ExtraFiles */,
 				E9B5686F267657DE00397712 /* Model */,
 				E9B5686E267657D700397712 /* View */,
@@ -176,7 +179,7 @@
 				E9D8348D2679E93100DD3315 /* Model */,
 				E9D8348E2679E93600DD3315 /* View */,
 				E9D8348F2679E93C00DD3315 /* Controller */,
-				E9D834902679E94E00DD3315 /* Network */,
+				E9D834902679E94E00DD3315 /* Service */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -206,29 +209,37 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		E9D834902679E94E00DD3315 /* Network */ = {
+		E9D834902679E94E00DD3315 /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				E9D834952679EDC200DD3315 /* SearchNetworkService.swift */,
+				E9118003268CB69F0081789B /* SearchStorageManager.swift */,
 			);
-			path = Network;
+			path = Service;
+			sourceTree = "<group>";
+		};
+		E9DD3F8A268CA21200B27505 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		E9DDC8CC267B811B001D777B /* Trends */ = {
 			isa = PBXGroup;
 			children = (
 				E9DDC8CE267B8130001D777B /* Controller */,
-				E9DDC8CD267B8128001D777B /* Network */,
+				E9DDC8CD267B8128001D777B /* Service */,
 			);
 			path = Trends;
 			sourceTree = "<group>";
 		};
-		E9DDC8CD267B8128001D777B /* Network */ = {
+		E9DDC8CD267B8128001D777B /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				E9DDC8D5267B8178001D777B /* TrendsNetworkService.swift */,
 			);
-			path = Network;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		E9DDC8CE267B8130001D777B /* Controller */ = {
@@ -310,12 +321,12 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		E9E7FC822673A07900B29C90 /* Network */ = {
+		E9E7FC822673A07900B29C90 /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				E9DD41792673A9AF009C9B7E /* ProfileNetworkService.swift */,
 			);
-			path = Network;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		E9FC34C72686108E00A5EC6D /* Stories */ = {
@@ -324,7 +335,7 @@
 				E9FC34CA268610A400A5EC6D /* Model */,
 				E9FC34C9268610A100A5EC6D /* View */,
 				E9FC34C82686109A00A5EC6D /* Controller */,
-				E9FC34CB268610A800A5EC6D /* Network */,
+				E9FC34CB268610A800A5EC6D /* Service */,
 			);
 			path = Stories;
 			sourceTree = "<group>";
@@ -354,13 +365,13 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		E9FC34CB268610A800A5EC6D /* Network */ = {
+		E9FC34CB268610A800A5EC6D /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				E9F6F9BF2687499D00732ED3 /* API.swift */,
 				E9FC34CC268610CD00A5EC6D /* StoriesNetworkService.swift */,
 			);
-			path = Network;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		E9FC34CE268610EC00A5EC6D /* Data */ = {
@@ -463,6 +474,7 @@
 				E9E7FC8126739DE000B29C90 /* PostsData.swift in Sources */,
 				E9D8348B2679583700DD3315 /* NetworkService.swift in Sources */,
 				E9FC34D02686110F00A5EC6D /* StoriesViewController.swift in Sources */,
+				E9118004268CB69F0081789B /* SearchStorageManager.swift in Sources */,
 				E9D8349A2679EF0E00DD3315 /* SearchedUser.swift in Sources */,
 				E9FBC57E2676637900A422C3 /* AccountData.swift in Sources */,
 				E9DDC8D6267B8178001D777B /* TrendsNetworkService.swift in Sources */,

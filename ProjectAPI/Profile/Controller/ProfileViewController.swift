@@ -86,7 +86,7 @@ extension ProfileViewController {
             self.accountPosts = loadedPosts.posts
             guard let posts = loadedPosts.posts else { return }
             for post in posts {
-                NetworkService.fetchImage(url: post.squarePostImage.first ?? "") { result in
+                NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let image):
@@ -102,7 +102,7 @@ extension ProfileViewController {
     }
     
     private func fetchProfileImage(avatarUrl: String) {
-        NetworkService.fetchImage(url: avatarUrl) { result in
+        NetworkService.shared.fetchImage(urlString: avatarUrl) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):

@@ -9,9 +9,10 @@ import UIKit
 
 class NetworkService {
     
+    static let shared = NetworkService()
     private init() {}
     
-    static func getRequest(url: URL, with completion: @escaping (Data) -> Void) {
+    func getRequest(url: URL, with completion: @escaping (Data) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = headers
@@ -22,8 +23,8 @@ class NetworkService {
         }.resume()
     }   
     
-    static func fetchImage(url: String, completion: @escaping (Result<UIImage, ErrorHangler>) -> Void) {
-        guard let url = URL(string: url) else {
+    func fetchImage(urlString: String, completion: @escaping (Result<UIImage, ErrorHangler>) -> Void) {
+        guard let url = URL(string: urlString) else {
             completion(.failure(.urlCreateError))
             return }
         guard let imageData = try? Data(contentsOf: url) else {

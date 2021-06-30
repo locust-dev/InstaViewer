@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -38,7 +39,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" placeholder="Username" translatesAutoresizingMaskIntoConstraints="NO" id="N85-39-yzr">
+                            <searchBar contentMode="redraw" placeholder="Username" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N85-39-yzr">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="vPS-Ta-gYr"/>
@@ -75,22 +76,34 @@
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Ppn-Jo-ZHM">
-                                                            <rect key="frame" x="68" y="0.0" width="306" height="46"/>
+                                                            <rect key="frame" x="68" y="0.0" width="254" height="46"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j8c-Gb-rVv">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="306" height="22"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="254" height="22"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="fullname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Tx-ZB-5Bo">
-                                                                    <rect key="frame" x="0.0" y="24" width="306" height="22"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Tx-ZB-5Bo">
+                                                                    <rect key="frame" x="0.0" y="24" width="254" height="22"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                             </subviews>
                                                         </stackView>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HjN-30-mFK">
+                                                            <rect key="frame" x="344" y="0.0" width="30" height="46"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="30" id="scV-72-jcj"/>
+                                                            </constraints>
+                                                            <state key="normal">
+                                                                <imageReference key="image" image="multiply.circle" catalog="system" symbolScale="small"/>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="deleteButton:" destination="9la-hy-Crk" eventType="touchUpInside" id="VYa-gI-s7Y"/>
+                                                            </connections>
+                                                        </button>
                                                     </subviews>
                                                 </stackView>
                                             </subviews>
@@ -103,9 +116,9 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
-                                            <outlet property="profileFullname" destination="1Tx-ZB-5Bo" id="g5S-et-vUi"/>
+                                            <outlet property="profileDescription" destination="1Tx-ZB-5Bo" id="g5S-et-vUi"/>
                                             <outlet property="profileImage" destination="w9L-4J-uXk" id="SYZ-hM-pki"/>
-                                            <outlet property="profileName" destination="j8c-Gb-rVv" id="H0e-oq-TBu"/>
+                                            <outlet property="profileUsername" destination="j8c-Gb-rVv" id="H0e-oq-TBu"/>
                                             <segue destination="BYZ-38-t0r" kind="show" id="2CR-xY-HVM"/>
                                         </connections>
                                     </tableViewCell>
@@ -726,11 +739,12 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="bls-em-5gZ"/>
-        <segue reference="bOV-fd-nEJ"/>
+        <segue reference="2CR-xY-HVM"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
+        <image name="multiply.circle" catalog="system" width="128" height="121"/>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="play.fill" catalog="system" width="116" height="128"/>
         <image name="square.grid.2x2" catalog="system" width="128" height="114"/>

@@ -15,7 +15,30 @@ class SearchTableViewCell: UITableViewCell {
         }
     }
     
-    @IBOutlet weak var profileName: UILabel!
-    @IBOutlet weak var profileFullname: UILabel!
+    @IBOutlet weak var profileUsername: UILabel!
+    @IBOutlet weak var profileDescription: UILabel!
     
+    var cachedUser: ChoseSearchedUser?
+    var delegate: SearchCellDelegate?
+    
+    @IBAction func deleteButton(_ sender: Any) {
+        guard let cachedUser = cachedUser,
+              let indexPath = indexPath,
+              let delegate = delegate
+        else { return }
+        SearchStorageManager.shared.delete(cachedUser)
+        delegate.deleteRows(indexPath: indexPath)
+    }
+    
+}
+
+extension SearchTableViewCell {
+    
+    var tableView: UITableView? {
+        return superview as? UITableView
+    }
+
+    var indexPath: IndexPath? {
+        return tableView?.indexPath(for: self)
+    }
 }

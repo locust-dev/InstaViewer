@@ -14,7 +14,6 @@ class StoriesCell: UICollectionViewCell {
     
     var story: Story? {
         didSet {
-            print(story?.mediaType)
             if story?.mediaType == .video {
                 playIcon.isHidden = false
             } else {

@@ -13,7 +13,7 @@ class ProfileNetworkService {
     
     static func fetchAccountInfo(from url: String, with completion: @escaping (Account) -> Void) {
         guard let url = URL(string: url) else { return }
-        NetworkService.getRequest(url: url) { data in
+        NetworkService.shared.getRequest(url: url) { data in
             do {
                 let accountData = try JSONDecoder().decode(AccountData.self, from: data)
                 guard let account = Account(accountData: accountData) else {
@@ -35,7 +35,7 @@ class ProfileNetworkService {
             URLQueryItem(name: "pageId", value: pageIdGlobal)
         ]
         
-        NetworkService.getRequest(url: (components?.url)!) { data in
+        NetworkService.shared.getRequest(url: (components?.url)!) { data in
             do {
                 let postsData = try JSONDecoder().decode(PostsData.self, from: data)
                 guard let accountPosts = Posts(postsData: postsData) else { return }

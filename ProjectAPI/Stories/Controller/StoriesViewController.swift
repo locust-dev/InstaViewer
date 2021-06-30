@@ -56,7 +56,7 @@ class StoriesViewController: UICollectionViewController {
                 if thumbnailUrl == "" {
                     thumbnailUrl = story.url
                 }
-                NetworkService.fetchImage(url: thumbnailUrl) { result in
+                NetworkService.shared.fetchImage(urlString: thumbnailUrl) { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let image):

@@ -17,7 +17,7 @@ struct SearchResults {
 
 struct SearchedUser {
     let id: Int
-    let fullname: String
+    let extraDescription: String
     let username: String
     let picture: String?
     
@@ -29,7 +29,7 @@ struct SearchedUser {
             guard let username = user.username else { continue }
             let newUser = SearchedUser(
                 id: user.id ?? 0,
-                fullname: user.fullname ?? "Unknown",
+                extraDescription: user.fullname ?? "",
                 username: username,
                 picture: user.picture ?? nil)
             users.append(newUser)

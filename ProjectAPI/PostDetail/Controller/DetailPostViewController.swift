@@ -41,7 +41,7 @@ class DetailPostViewController: UIViewController {
                 urlForImage = storyImageUrl
             } else { return }
             
-            NetworkService.fetchImage(url: urlForImage) { result in
+            NetworkService.shared.fetchImage(urlString: urlForImage) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let image):
@@ -62,7 +62,7 @@ class DetailPostViewController: UIViewController {
     }
     
     private func fetchProfileImage() {
-        NetworkService.fetchImage(url: avatar ?? "") { result in
+        NetworkService.shared.fetchImage(urlString: avatar ?? "") { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):

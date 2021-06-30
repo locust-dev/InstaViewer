@@ -54,7 +54,7 @@ class TrendPostsViewController: UIViewController {
     private func fetchImagesFromPosts() {
         guard let posts = posts else { return }
         for post in posts {
-            NetworkService.fetchImage(url: post.squarePostImage.first ?? "") { result in
+            NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let image):
