@@ -32,7 +32,7 @@ class ProfileNetworkService {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "by", value: "username"),
-            URLQueryItem(name: "pageId", value: pageIdGlobal)
+            URLQueryItem(name: "pageId", value: MainApi.pageIdGlobal)
         ]
         
         NetworkService.shared.getRequest(url: (components?.url)!) { data in

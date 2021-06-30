@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E9118004268CB69F0081789B /* SearchStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9118003268CB69F0081789B /* SearchStorageManager.swift */; };
-		E9B568642676369400397712 /* PostInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568632676369400397712 /* PostInfo.swift */; };
+		E9118006268CEB9B0081789B /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9118005268CEB9B0081789B /* UIViewController.swift */; };
+		E9B568642676369400397712 /* MainApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568632676369400397712 /* MainApi.swift */; };
 		E9B568662676445B00397712 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568652676445B00397712 /* ImageCell.swift */; };
 		E9B568682676449000397712 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B568672676449000397712 /* ProfileViewController.swift */; };
 		E9C5F484268B25F700CADAFC /* ErrorHangler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C5F483268B25F700CADAFC /* ErrorHangler.swift */; };
@@ -29,7 +30,7 @@
 		E9E7FC732672678600B29C90 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9E7FC722672678600B29C90 /* Assets.xcassets */; };
 		E9E7FC762672678600B29C90 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9E7FC742672678600B29C90 /* LaunchScreen.storyboard */; };
 		E9E7FC8126739DE000B29C90 /* PostsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E7FC8026739DE000B29C90 /* PostsData.swift */; };
-		E9F6F9C02687499D00732ED3 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F6F9BF2687499D00732ED3 /* API.swift */; };
+		E9F6F9C02687499D00732ED3 /* StoriesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F6F9BF2687499D00732ED3 /* StoriesApi.swift */; };
 		E9FBC57E2676637900A422C3 /* AccountData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FBC57D2676637900A422C3 /* AccountData.swift */; };
 		E9FBC5802676660100A422C3 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FBC57F2676660100A422C3 /* Account.swift */; };
 		E9FBC58226766A8100A422C3 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FBC58126766A8100A422C3 /* Posts.swift */; };
@@ -42,7 +43,8 @@
 
 /* Begin PBXFileReference section */
 		E9118003268CB69F0081789B /* SearchStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchStorageManager.swift; sourceTree = "<group>"; };
-		E9B568632676369400397712 /* PostInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfo.swift; sourceTree = "<group>"; };
+		E9118005268CEB9B0081789B /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		E9B568632676369400397712 /* MainApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainApi.swift; sourceTree = "<group>"; };
 		E9B568652676445B00397712 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		E9B568672676449000397712 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E9C5F483268B25F700CADAFC /* ErrorHangler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHangler.swift; sourceTree = "<group>"; };
@@ -65,7 +67,7 @@
 		E9E7FC752672678600B29C90 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E9E7FC772672678600B29C90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9E7FC8026739DE000B29C90 /* PostsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsData.swift; sourceTree = "<group>"; };
-		E9F6F9BF2687499D00732ED3 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		E9F6F9BF2687499D00732ED3 /* StoriesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesApi.swift; sourceTree = "<group>"; };
 		E9FBC57D2676637900A422C3 /* AccountData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountData.swift; sourceTree = "<group>"; };
 		E9FBC57F2676660100A422C3 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		E9FBC58126766A8100A422C3 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
@@ -95,12 +97,13 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		E9B568622676367700397712 /* ExtraFiles */ = {
+		E9B568622676367700397712 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				E9B568632676369400397712 /* PostInfo.swift */,
+				E9B568632676369400397712 /* MainApi.swift */,
+				E9F6F9BF2687499D00732ED3 /* StoriesApi.swift */,
 			);
-			path = ExtraFiles;
+			path = API;
 			sourceTree = "<group>";
 		};
 		E9B5686C267657B200397712 /* Profile */ = {
@@ -118,7 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				E9DD3F8A268CA21200B27505 /* Extensions */,
-				E9B568622676367700397712 /* ExtraFiles */,
+				E9B568622676367700397712 /* API */,
 				E9B5686F267657DE00397712 /* Model */,
 				E9B5686E267657D700397712 /* View */,
 				E9B56870267657EA00397712 /* Controller */,
@@ -221,6 +224,7 @@
 		E9DD3F8A268CA21200B27505 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				E9118005268CEB9B0081789B /* UIViewController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -368,7 +372,6 @@
 		E9FC34CB268610A800A5EC6D /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				E9F6F9BF2687499D00732ED3 /* API.swift */,
 				E9FC34CC268610CD00A5EC6D /* StoriesNetworkService.swift */,
 			);
 			path = Service;
@@ -452,6 +455,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9118006268CEB9B0081789B /* UIViewController.swift in Sources */,
 				E9FC34C62684FA0A00A5EC6D /* Stories.swift in Sources */,
 				E9D834942679EC1400DD3315 /* SearchViewController.swift in Sources */,
 				E9FC34CD268610CD00A5EC6D /* StoriesNetworkService.swift in Sources */,
@@ -459,8 +463,8 @@
 				E9C5F484268B25F700CADAFC /* ErrorHangler.swift in Sources */,
 				E9D834962679EDC200DD3315 /* SearchNetworkService.swift in Sources */,
 				E9FC34C42684F85100A5EC6D /* StoriesData.swift in Sources */,
-				E9F6F9C02687499D00732ED3 /* API.swift in Sources */,
-				E9B568642676369400397712 /* PostInfo.swift in Sources */,
+				E9F6F9C02687499D00732ED3 /* StoriesApi.swift in Sources */,
+				E9B568642676369400397712 /* MainApi.swift in Sources */,
 				E9D834982679EDF500DD3315 /* SearchResultsData.swift in Sources */,
 				E9E7FC712672678300B29C90 /* ProjectAPI.xcdatamodeld in Sources */,
 				E9B568662676445B00397712 /* ImageCell.swift in Sources */,

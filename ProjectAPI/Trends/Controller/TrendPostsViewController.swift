@@ -34,18 +34,9 @@ class TrendPostsViewController: UIViewController {
         detailPostVC.post = posts[indexPath.item]
     }
     
-    private func play(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let vc = AVPlayerViewController()
-        vc.player = AVPlayer(url: url)
-        present(vc, animated: true) {
-            vc.player?.play()
-        }
-    }
-    
     private func fetchPosts() {
         indicator.startAnimating()
-        TrendsNetworkService.fetchTrendPosts(from: urlForTrends) { loadedPosts in
+        TrendsNetworkService.fetchTrendPosts(from: MainApi.urlForTrends) { loadedPosts in
             self.posts = loadedPosts.posts
             self.fetchImagesFromPosts()
         }
@@ -86,7 +77,7 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
         
         cell.image.image = images[indexPath.item]
         guard let posts = posts else { return cell }
-        cell.post = posts[indexPath.item]
+        cell.configure(type: posts[indexPath.row].type)
         return cell
     }
     
@@ -107,7 +98,7 @@ extension TrendPostsViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Configure Search Bar
 extension TrendPostsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        hashTagForTrendGlobal = searchBar.text ?? ""
+        MainApi.hashTagForTrendGlobal = searchBar.text ?? ""
         indicator.startAnimating()
         images.removeAll()
         posts = nil

@@ -12,16 +12,14 @@ class ImageCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var playIcon: UIImageView!
     
-    var post: Post? {
-        didSet {
-            if post?.type == .video {
-                playIcon.isHidden = false
-            } else if post?.type == .sidecar {
-                playIcon.isHidden = false
-                playIcon.image = UIImage(systemName: "rectangle.stack.person.crop")
-            } else {
-                playIcon.isHidden = true
-            }
+    func configure(type: TypeOfPost) {
+        if type == .video {
+            playIcon.isHidden = false
+        } else if type == .sidecar {
+            playIcon.isHidden = false
+            playIcon.image = UIImage(systemName: "rectangle.stack.person.crop")
+        } else {
+            playIcon.isHidden = true
         }
     }
     

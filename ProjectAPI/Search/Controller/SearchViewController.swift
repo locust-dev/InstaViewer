@@ -78,12 +78,12 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let users = searchedResults else {
-            accountGlobal = choseUsers[indexPath.row].username ?? ""
+            MainApi.accountGlobal = choseUsers[indexPath.row].username ?? ""
             return
         }
         
         let user = users[indexPath.row]
-        accountGlobal = user.username
+        MainApi.accountGlobal = user.username
         
         guard let encodedAvatar = profileAvatars[indexPath.row].jpegData(compressionQuality: 1)?.base64EncodedString() else { return }
         storage.save(user: user, avatar: encodedAvatar) { user in
@@ -98,7 +98,7 @@ extension SearchViewController: UITableViewDelegate {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, text != "" else { return }
-        searchUserGlobal = text
+        MainApi.searchUserGlobal = text
         indicator.startAnimating()
         searchedResults = []
         tableView.reloadData()
@@ -132,7 +132,7 @@ extension SearchViewController {
     }
     
     private func searchUsers() {
-        SearchNetworkService.fetchSearchedUsers(url: urlForSearch) { results in
+        SearchNetworkService.fetchSearchedUsers(url: MainApi.urlForSearch) { results in
             self.searchedResults = results.results
             DispatchQueue.main.async {
                 self.tableView.reloadData()

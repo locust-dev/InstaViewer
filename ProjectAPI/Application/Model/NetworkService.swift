@@ -15,7 +15,7 @@ class NetworkService {
     func getRequest(url: URL, with completion: @escaping (Data) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
-        request.allHTTPHeaderFields = headers
+        request.allHTTPHeaderFields = MainApi.headers
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else { return }

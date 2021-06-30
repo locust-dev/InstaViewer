@@ -71,15 +71,6 @@ class StoriesViewController: UICollectionViewController {
         }
     }
     
-    private func play(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let vc = AVPlayerViewController()
-        vc.player = AVPlayer(url: url)
-        present(vc, animated: true) {
-            vc.player?.play()
-        }
-    }
-    
 }
 
 // MARK: - Collection view flow layout

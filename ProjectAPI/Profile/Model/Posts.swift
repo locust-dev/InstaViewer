@@ -40,9 +40,9 @@ struct Post {
         for post in postsList {
             var type: TypeOfPost {
                 switch post.type {
-                case "image": return .image
+                case "sidecar": return .sidecar
                 case "video": return .video
-                default: return .sidecar
+                default: return .image
                 }
             }
     

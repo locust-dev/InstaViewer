@@ -14,7 +14,7 @@ class StoriesNetworkService {
     static func createStoriesRequest(url: URL, with completion: @escaping (Data) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
-        request.allHTTPHeaderFields = headers2
+        request.allHTTPHeaderFields = StoriesApi.storyHeaders
         
         URLSession.shared.dataTask(with: request) { data, _, error in
             guard let data = data else {

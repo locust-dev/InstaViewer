@@ -54,14 +54,6 @@ class ProfileViewController: UIViewController {
 
 // MARK: - Private methods
 extension ProfileViewController {
-    private func play(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let vc = AVPlayerViewController()
-        vc.player = AVPlayer(url: url)
-        present(vc, animated: true) {
-            vc.player?.play()
-        }
-    }
     
     private func setupStoryBorder() {
         profileAvatar.layer.borderWidth = 4
@@ -69,9 +61,9 @@ extension ProfileViewController {
     }
     
     private func fetchAccount() {
-        ProfileNetworkService.fetchAccountInfo(from: urlForAccountInfo) { account in
+        ProfileNetworkService.fetchAccountInfo(from: MainApi.urlForAccountInfo) { account in
             self.account = account
-            idForStoriesGlobal = account.id
+            MainApi.idForStoriesGlobal = account.id
             DispatchQueue.main.async {
                 self.setupAccountUI()
             }
@@ -82,7 +74,7 @@ extension ProfileViewController {
     }
     
     private func fetchPosts() {
-        ProfileNetworkService.fetchProfilePosts(from: urlForPosts) { loadedPosts in
+        ProfileNetworkService.fetchProfilePosts(from: MainApi.urlForPosts) { loadedPosts in
             self.accountPosts = loadedPosts.posts
             guard let posts = loadedPosts.posts else { return }
             for post in posts {
@@ -115,8 +107,8 @@ extension ProfileViewController {
     }
     
     private func fetchStories() {
-        if idForStoriesGlobal != 0 {
-            StoriesNetworkService.fetchStories(from: urlForStories2) { stories in
+        if MainApi.idForStoriesGlobal != 0 {
+            StoriesNetworkService.fetchStories(from: StoriesApi.urlForStories) { stories in
                 self.stories = stories
                 DispatchQueue.main.async {
                     if !stories.isEmpty {
@@ -172,7 +164,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         
         cell.image.image = images[indexPath.item]
         guard let posts = accountPosts else { return cell }
-        cell.post = posts[indexPath.item]
+        cell.configure(type: posts[indexPath.row].type)
         return cell
     }
     
