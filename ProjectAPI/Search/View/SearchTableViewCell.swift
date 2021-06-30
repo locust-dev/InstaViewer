@@ -17,6 +17,7 @@ class SearchTableViewCell: UITableViewCell {
     
     @IBOutlet weak var profileUsername: UILabel!
     @IBOutlet weak var profileDescription: UILabel!
+    @IBOutlet weak var deleteButton: UIButton!
     
     var cachedUser: ChoseSearchedUser?
     var delegate: SearchCellDelegate?

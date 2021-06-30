@@ -16,6 +16,9 @@ class ImageCell: UICollectionViewCell {
         didSet {
             if post?.type == .video {
                 playIcon.isHidden = false
+            } else if post?.type == .sidecar {
+                playIcon.isHidden = false
+                playIcon.image = UIImage(systemName: "rectangle.stack.person.crop")
             } else {
                 playIcon.isHidden = true
             }

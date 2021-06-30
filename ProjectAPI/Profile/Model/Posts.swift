@@ -20,6 +20,7 @@ struct Posts {
 enum TypeOfPost {
     case video
     case image
+    case sidecar
 }
 
 struct Post {
@@ -34,14 +35,14 @@ struct Post {
     
     static func getPost(postsData: PostsData?) -> [Post]? {
         var posts = [Post]()
-        guard let data = postsData else { return nil }
-        guard let postsList = data.data else { return nil }
+        guard let data = postsData, let postsList = data.data else { return nil }
         
         for post in postsList {
             var type: TypeOfPost {
                 switch post.type {
                 case "image": return .image
-                default: return .video
+                case "video": return .video
+                default: return .sidecar
                 }
             }
     

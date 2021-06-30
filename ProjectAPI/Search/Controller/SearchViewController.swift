@@ -21,13 +21,11 @@ class SearchViewController: UIViewController {
     private let storage = SearchStorageManager.shared
     private var searchedResults: [SearchedUser]?
     private var profileAvatars = [UIImage]()
-    
-    var choseUsers = [ChoseSearchedUser]()
+    private var choseUsers = [ChoseSearchedUser]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         getUsersFromStorage()
-        print(choseUsers.count)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -55,12 +53,14 @@ extension SearchViewController: UITableViewDataSource {
             cell.delegate = self
             cell.profileUsername.text = choseUser.username
             cell.profileDescription.text = choseUser.userDescription
+            cell.deleteButton.isHidden = false
             guard let avatar = choseUser.avatar else { return cell }
             guard let decodedData = Data(base64Encoded: avatar, options: .ignoreUnknownCharacters) else { return cell }
             cell.profileImage.image = UIImage(data: decodedData)
             return cell
         }
         
+        cell.deleteButton.isHidden = true
         if profileAvatars.count == searchedResults?.count {
             cell.profileImage.image = profileAvatars[indexPath.row]
         } else {
@@ -113,6 +113,10 @@ extension SearchViewController: UISearchBarDelegate {
             searchedResults = nil
             tableView.reloadData()
         }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        view.endEditing(true)
     }
 }
 

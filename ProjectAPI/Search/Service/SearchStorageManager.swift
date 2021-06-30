@@ -40,8 +40,27 @@ class SearchStorageManager {
         }
     }
     
+    func isExist(username: String) -> Bool {
+        var fetchedUsers = [ChoseSearchedUser]()
+        fetchData { result in
+            switch result {
+            case .success(let users): fetchedUsers = users
+            case .failure(let error): print(error.localizedDescription)
+            }
+        }
+        
+        for user in fetchedUsers {
+            if username == user.username {
+                print("alredy exist")
+                return true
+            }
+        }
+        return false
+    }
+    
     // Work with data
     func save(user: SearchedUser, avatar: String, completion: (ChoseSearchedUser) -> Void) {
+        if isExist(username: user.username) { return }
         let newUser = ChoseSearchedUser(context: viewContext)
         newUser.username = user.username
         newUser.userDescription = user.extraDescription
@@ -54,7 +73,7 @@ class SearchStorageManager {
         viewContext.delete(user)
         saveContext()
     }
-
+    
     // MARK: - Core Data Saving support
     func saveContext() {
         if viewContext.hasChanges {

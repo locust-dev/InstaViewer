@@ -156,7 +156,6 @@ extension ProfileViewController {
 }
 
 
-
 // MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -172,20 +171,19 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         }
         
         cell.image.image = images[indexPath.item]
-        
         guard let posts = accountPosts else { return cell }
         cell.post = posts[indexPath.item]
-        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let posts = accountPosts else { return }
         let post = posts[indexPath.item]
-        if post.type == .image {
-            performSegue(withIdentifier: "toDetail", sender: nil)
-        } else {
-            play(urlString: post.video)
+        
+        switch post.type {
+        case .video: play(urlString: post.video)
+        case .image: performSegue(withIdentifier: "toDetail", sender: nil)
+        case .sidecar: performSegue(withIdentifier: "toDetail", sender: nil)
         }
     }
     
