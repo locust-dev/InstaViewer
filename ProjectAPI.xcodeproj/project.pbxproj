@@ -124,7 +124,7 @@
 			children = (
 				E9DD3F8A268CA21200B27505 /* Extensions */,
 				E9B568622676367700397712 /* API */,
-				E9B5686F267657DE00397712 /* Model */,
+				E9B5686F267657DE00397712 /* Service */,
 				E9B5686E267657D700397712 /* View */,
 				E9B56870267657EA00397712 /* Controller */,
 				E9B568712676580900397712 /* Files */,
@@ -142,13 +142,13 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		E9B5686F267657DE00397712 /* Model */ = {
+		E9B5686F267657DE00397712 /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				E9D8348A2679583700DD3315 /* NetworkService.swift */,
 				E9C5F483268B25F700CADAFC /* ErrorHangler.swift */,
 			);
-			path = Model;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		E9B56870267657EA00397712 /* Controller */ = {
@@ -645,7 +645,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UHQ7TS5P9H;
 				INFOPLIST_FILE = ProjectAPI/Application/Files/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -653,7 +653,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = voxx.ProjectAPI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -665,7 +665,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UHQ7TS5P9H;
 				INFOPLIST_FILE = ProjectAPI/Application/Files/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -673,7 +673,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = voxx.ProjectAPI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

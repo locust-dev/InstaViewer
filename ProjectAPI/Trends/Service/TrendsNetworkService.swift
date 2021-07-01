@@ -10,8 +10,8 @@ class TrendsNetworkService {
     
     private init() {}
     
-    static func fetchTrendPosts(from url: String, with completion: @escaping (Posts) -> Void) {
-        guard let url = URL(string: url) else { return }
+    static func fetchTrendPosts(hashtag: String, with completion: @escaping (Posts) -> Void) {
+        guard let url = URL(string: MainApi.getUrlForTrends(hashtag: hashtag)) else { return }
         
         NetworkService.shared.getRequest(url: url) { data in
             do {

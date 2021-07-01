@@ -113,7 +113,7 @@ extension ProfileViewController {
                 case .success(let image):
                     self.avatar.image = image
                 case .failure(_):
-                    self.avatar.image = UIImage(systemName: "nullProfileImage")
+                    self.avatar.image = UIImage(named: "nullProfileImage")
                 }
             }
         }
@@ -205,7 +205,7 @@ extension ProfileViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item != images.count {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postCell", for: indexPath) as! PostCollectionViewCell
             cell.image.image = images[indexPath.item]
             cell.configure(type: accountPosts[indexPath.row].type)
             return cell
@@ -220,9 +220,21 @@ extension ProfileViewController: UICollectionViewDataSource {
 // MARK: - Collection view FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemPerRow: CGFloat = 3
-        let side = (collectionView.frame.width - 4) / itemPerRow
-        return CGSize(width: side, height: side)
+        
+        let width: CGFloat
+        let height: CGFloat
+        
+        if indexPath.item == images.count {
+            width = collectionView.frame.width
+            height = 100
+        } else {
+            let itemPerRow: CGFloat = 3
+            let side = (collectionView.frame.width - 4) / itemPerRow
+            width = side
+            height = side
+        }
+
+        return CGSize(width: width, height: height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

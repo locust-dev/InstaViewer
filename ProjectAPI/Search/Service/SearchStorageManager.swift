@@ -11,7 +11,6 @@ class SearchStorageManager {
     
     static let shared = SearchStorageManager()
     
-    // MARK: - Core Data stack
     private let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ProjectAPI")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -40,25 +39,6 @@ class SearchStorageManager {
         }
     }
     
-    func isExist(username: String) -> Bool {
-        var fetchedUsers = [ChoseSearchedUser]()
-        fetchData { result in
-            switch result {
-            case .success(let users): fetchedUsers = users
-            case .failure(let error): print(error.localizedDescription)
-            }
-        }
-        
-        for user in fetchedUsers {
-            if username == user.username {
-                print("alredy exist")
-                return true
-            }
-        }
-        return false
-    }
-    
-    // Work with data
     func save(user: SearchedUser, avatar: String, completion: (ChoseSearchedUser) -> Void) {
         if isExist(username: user.username) { return }
         let newUser = ChoseSearchedUser(context: viewContext)
@@ -74,8 +54,28 @@ class SearchStorageManager {
         saveContext()
     }
     
-    // MARK: - Core Data Saving support
-    func saveContext() {
+}
+
+// MARK: - Private methods
+extension SearchStorageManager {
+    private func isExist(username: String) -> Bool {
+        var isExist = false
+        fetchData { result in
+            switch result {
+            case .success(let users):
+                for user in users {
+                    if username == user.username {
+                        isExist = true
+                    }
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        return isExist
+    }
+    
+    private func saveContext() {
         if viewContext.hasChanges {
             do {
                 try viewContext.save()

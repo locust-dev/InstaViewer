@@ -8,11 +8,9 @@
 import UIKit
 import AVKit
 
-private let reuseIdentifier = "cell"
-
 class StoriesViewController: UICollectionViewController {
     
-    var username: String!
+    var username: String?
     var stories: [Story]!
     private var thumbnails = [UIImage]()
     
@@ -27,7 +25,7 @@ class StoriesViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! StoriesCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "storyCell", for: indexPath) as! StoriesCell
         let image = thumbnails[indexPath.item]
         cell.configureCell(image: image)
         cell.story = stories[indexPath.item]
@@ -36,34 +34,34 @@ class StoriesViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let story = stories[indexPath.item]
-        if story.mediaType == .video {
-            play(urlString: story.url)
-        } else {
-            performSegue(withIdentifier: "toDetail", sender: nil)
-        }
+        story.mediaType == .video
+            ? play(urlString: story.url)
+            : performSegue(withIdentifier: "toDetail", sender: nil)
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
         guard let detailVC = segue.destination as? DetailPostViewController else { return }
-        detailVC.storyImageUrl = stories[indexPath.item].url
+        detailVC.imageUrl = stories[indexPath.item].url
     }
     
+}
+
+//MARK: - Private methods
+extension StoriesViewController {
     private func fetchThumbnails() {
         DispatchQueue.global().async {
             for story in self.stories {
-                var thumbnailUrl = story.thumbnail
-                if thumbnailUrl == "" {
-                    thumbnailUrl = story.url
-                }
-                NetworkService.shared.fetchImage(urlString: thumbnailUrl) { result in
+                let url = self.createStoryUrl(story: story)
+                NetworkService.shared.fetchImage(urlString: url) { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let image):
                             self.thumbnails.append(image)
                             self.collectionView.reloadData()
                         case .failure(_):
-                            self.thumbnails.append(UIImage(systemName: "xmark")!)
+                            self.thumbnails.append(UIImage(named: "nullCellImage")!)
                         }
                     }
                 }
@@ -71,9 +69,16 @@ class StoriesViewController: UICollectionViewController {
         }
     }
     
+    private func createStoryUrl(story: Story) -> String {
+        if story.thumbnail == "" {
+            return story.url
+        }
+        return story.thumbnail
+    }
+    
 }
 
-// MARK: - Collection view flow layout
+// MARK: - Collection view delegate flow layout
 extension StoriesViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = 3

@@ -23,6 +23,7 @@ class SearchViewController: UIViewController {
     private var searchedResults: [SearchedUser]?
     private var profileAvatars = [UIImage]()
     private var choseUsers = [ChoseSearchedUser]()
+    private var seachedUsername = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +49,7 @@ extension SearchViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SearchTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
         
         guard let results = searchedResults else {
             let choseUser = choseUsers[indexPath.row]
@@ -86,7 +87,7 @@ extension SearchViewController: UITableViewDelegate {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, text != "" else { return }
-        MainApi.searchUserName = text
+        seachedUsername = text
         indicator.startAnimating()
         searchedResults = []
         tableView.reloadData()
@@ -97,11 +98,11 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        notFoundLabel.isHidden = true
         if searchText == "" {
             searchedResults = nil
             tableView.reloadData()
         }
-        notFoundLabel.isHidden = true
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -127,7 +128,7 @@ extension SearchViewController {
     }
     
     private func searchUsers() {
-        SearchNetworkService.fetchSearchedUsers(url: MainApi.urlForSearch) { results in
+        SearchNetworkService.fetchSearchedUsers(username: seachedUsername) { results in
             guard let results = results else {
                 DispatchQueue.main.async {
                     self.indicator.stopAnimating()

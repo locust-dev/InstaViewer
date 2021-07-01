@@ -16,6 +16,7 @@ class TrendPostsViewController: UIViewController {
     
     private var posts: [Post]?
     private var images = [UIImage]()
+    private var hashtagForTrends = "popular"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +37,7 @@ class TrendPostsViewController: UIViewController {
     
     private func fetchPosts() {
         indicator.startAnimating()
-        TrendsNetworkService.fetchTrendPosts(from: MainApi.urlForTrends) { loadedPosts in
+        TrendsNetworkService.fetchTrendPosts(hashtag: hashtagForTrends) { loadedPosts in
             self.posts = loadedPosts.posts
             self.fetchImagesFromPosts()
         }
@@ -68,7 +69,7 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendsCell", for: indexPath) as! PostCollectionViewCell
         
         if images.isEmpty {
             cell.image.image = UIImage(named: "nullCellImage")
@@ -98,7 +99,7 @@ extension TrendPostsViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Configure Search Bar
 extension TrendPostsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        MainApi.hashTagForTrends = searchBar.text ?? ""
+        hashtagForTrends = searchBar.text ?? ""
         indicator.startAnimating()
         images.removeAll()
         posts = nil

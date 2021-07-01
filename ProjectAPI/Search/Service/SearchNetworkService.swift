@@ -11,8 +11,8 @@ class SearchNetworkService {
     
     private init() {}
     
-    static func fetchSearchedUsers(url: String, completion: @escaping (SearchResults?) -> Void) {
-        guard let url = URL(string: url) else {
+    static func fetchSearchedUsers(username: String, completion: @escaping (SearchResults?) -> Void) {
+        guard let url = URL(string: MainApi.getUrlForSearch(username: username)) else {
             completion(nil)
             return
         }

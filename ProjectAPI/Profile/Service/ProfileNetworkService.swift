@@ -21,7 +21,7 @@ class ProfileNetworkService {
                 }
                 completion(account)
             } catch let error {
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }
