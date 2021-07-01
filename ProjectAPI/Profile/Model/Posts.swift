@@ -8,12 +8,12 @@
 struct Posts {
     var posts: [Post]? = []
     let hasNextPage: Bool?
-    let pageId: String?
+    let pageId: String
     
     init?(postsData: PostsData) {
         posts = Post.getPost(postsData: postsData)
         hasNextPage = postsData.meta.hasNext
-        pageId = postsData.meta.pageId
+        pageId = postsData.meta.pageId ?? ""
     }
 }
 

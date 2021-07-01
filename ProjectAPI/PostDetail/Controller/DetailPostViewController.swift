@@ -13,6 +13,8 @@ class DetailPostViewController: UIViewController {
     @IBOutlet weak var likesCount: UILabel!
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var postImage: UIImageView!
+    @IBOutlet weak var postImageTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var infoStackHeight: NSLayoutConstraint!
     
     @IBOutlet weak var userInfoStack: UIStackView!
     @IBOutlet weak var contentViewHeight: NSLayoutConstraint!
@@ -81,7 +83,9 @@ class DetailPostViewController: UIViewController {
             usernameLabel.text = username
             profileImage.layer.cornerRadius = profileImage.frame.height / 2
         } else {
-            userInfoStack.isHidden = true
+            //userInfoStack.isHidden = true
+            infoStackHeight.constant = 0
+            postImageTopConstraint.constant = 0
         }
     }
     

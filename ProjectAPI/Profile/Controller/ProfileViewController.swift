@@ -11,9 +11,10 @@ import AVKit
 class ProfileViewController: UIViewController {
     
     @IBOutlet weak var indicatorForInfo: UIActivityIndicatorView!
+    @IBOutlet weak var indicatorForPosts: UIActivityIndicatorView!
     @IBOutlet weak var accountInfo: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var profileAvatar: UIImageView!
+    @IBOutlet weak var avatar: UIImageView!
     
     @IBOutlet weak var postsCount: UILabel!
     @IBOutlet weak var followed: UILabel!
@@ -23,13 +24,14 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var isPrivateLabel: UILabel!
     
     private var account: Account?
-    private var accountPosts: [Post]?
     private var stories: [Story]?
+    private var hasNextPage: Bool?
+    private var accountPosts = [Post]()
     private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        profileAvatar.layer.cornerRadius = profileAvatar.frame.height / 2
+        collectionView.isHidden = true
         indicatorForInfo.startAnimating()
         fetchAccount()
     }
@@ -43,8 +45,8 @@ class ProfileViewController: UIViewController {
         } else if segue.identifier == "toDetail" {
             guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
             guard let detailVC = segue.destination as? DetailPostViewController else { return }
-            guard let posts = accountPosts else { return }
-            detailVC.post = posts[indexPath.item]
+            guard !accountPosts.isEmpty else { return }
+            detailVC.post = accountPosts[indexPath.item]
             detailVC.username = account?.userName
             detailVC.avatar = account?.profileImage
         }
@@ -56,38 +58,57 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController {
     
     private func setupStoryBorder() {
-        profileAvatar.layer.borderWidth = 4
-        profileAvatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
+        avatar.layer.borderWidth = 4
+        avatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
     }
     
     private func fetchAccount() {
         ProfileNetworkService.fetchAccountInfo(from: MainApi.urlForAccountInfo) { account in
             self.account = account
-            MainApi.idForStoriesGlobal = account.id
+            MainApi.idForStories = account.id
             DispatchQueue.main.async {
                 self.setupAccountUI()
+                if account.isPrivate {
+                    self.isPrivateLabel.isHidden = false
+                    self.collectionView.isHidden = true
+                } else {
+                    DispatchQueue.global().async {
+                        self.fetchStories()
+                        self.fetchPosts()
+                    }
+                }
             }
             self.fetchProfileImage(avatarUrl: account.profileImage)
-            self.fetchStories()
-            self.fetchPosts()
         }
     }
     
     private func fetchPosts() {
+        DispatchQueue.main.async {
+            self.indicatorForPosts.startAnimating()
+        }
         ProfileNetworkService.fetchProfilePosts(from: MainApi.urlForPosts) { loadedPosts in
-            self.accountPosts = loadedPosts.posts
+            guard let posts = loadedPosts.posts else { return }
+            self.accountPosts += posts
+            self.hasNextPage = loadedPosts.hasNextPage
+            MainApi.postsPageId = loadedPosts.pageId
             guard let posts = loadedPosts.posts else { return }
             for post in posts {
-                NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success(let image):
-                            self.images.append(image)
-                            self.collectionView.reloadData()
-                        case .failure(_):
-                            return
-                        }
-                    }
+                self.fetchPostImage(post: post)
+            }
+        }
+    }
+    
+    private func fetchPostImage(post: Post) {
+        NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    self.images.append(image)
+                    self.collectionView.isHidden = false
+                    self.collectionView.reloadData()
+                    self.indicatorForPosts.stopAnimating()
+                case .failure(_):
+                    return
                 }
             }
         }
@@ -98,16 +119,16 @@ extension ProfileViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):
-                    self.profileAvatar.image = image
+                    self.avatar.image = image
                 case .failure(_):
-                    self.profileAvatar.image = UIImage(systemName: "nullProfileImage")
+                    self.avatar.image = UIImage(systemName: "nullProfileImage")
                 }
             }
         }
     }
     
     private func fetchStories() {
-        if MainApi.idForStoriesGlobal != 0 {
+        if MainApi.idForStories != 0 {
             StoriesNetworkService.fetchStories(from: StoriesApi.urlForStories) { stories in
                 self.stories = stories
                 DispatchQueue.main.async {
@@ -121,11 +142,8 @@ extension ProfileViewController {
     }
     
     private func setupAccountUI() {
+        avatar.layer.cornerRadius = avatar.frame.height / 2
         guard let account = account else { return }
-        if account.isPrivate {
-            isPrivateLabel.isHidden = false
-            collectionView.isHidden = true
-        }
         title = "\(account.userName)"
         indicatorForInfo.stopAnimating()
         accountInfo.isHidden = false
@@ -138,7 +156,7 @@ extension ProfileViewController {
     
     private func setupGestures() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
-        profileAvatar.addGestureRecognizer(tapGesture)
+        avatar.addGestureRecognizer(tapGesture)
     }
     
     @objc private func tapped() {
@@ -151,31 +169,52 @@ extension ProfileViewController {
 // MARK: - Collection view Delegate & DataSourse
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        images.count
+        if images.count > 0 {
+            if images.count == account?.postsCount {
+                return images.count
+            }
+            return images.count + 1
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCell
         
-        if images.isEmpty {
-            cell.image.image = UIImage(named: "nullCellImage")
+        if indexPath.item != images.count {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
+            
+            if images.isEmpty {
+                cell.image.image = UIImage(named: "nullCellImage")
+                return cell
+            }
+            
+            cell.image.image = images[indexPath.item]
+            guard !accountPosts.isEmpty else { return cell }
+            cell.configure(type: accountPosts[indexPath.row].type)
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell
+            cell.indicator.startAnimating()
             return cell
         }
         
-        cell.image.image = images[indexPath.item]
-        guard let posts = accountPosts else { return cell }
-        cell.configure(type: posts[indexPath.row].type)
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let posts = accountPosts else { return }
-        let post = posts[indexPath.item]
-        
+        guard !accountPosts.isEmpty else { return }
+        let post = accountPosts[indexPath.item]
         switch post.type {
         case .video: play(urlString: post.video)
         case .image: performSegue(withIdentifier: "toDetail", sender: nil)
         case .sidecar: performSegue(withIdentifier: "toDetail", sender: nil)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let hasNextPage = hasNextPage else { return }
+        if indexPath.row == accountPosts.count && hasNextPage {
+            fetchPosts()
         }
     }
     
@@ -184,10 +223,16 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
 // MARK: - Collection view FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let side = (collectionView.frame.width - 4) / 3
+        
+        if collectionView.cellForItem(at: indexPath)?.reuseIdentifier == "indicatorCell" {
+            return CGSize(width: collectionView.frame.width, height: 50)
+        }
+        
+        let itemPerRow: CGFloat = 3
+        let side = (collectionView.frame.width - 4) / itemPerRow
         return CGSize(width: side, height: side)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         1
     }

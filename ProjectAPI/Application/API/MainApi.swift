@@ -6,37 +6,31 @@
 //
 
 class MainApi {
-    static var idGlobal = "3248383724"
-    static var accountGlobal = "jakdawis"
-    static var searchUserGlobal = ""
-    static var pageIdGlobal = ""
-    static var hashTagForTrendGlobal = "popular"
-    static var idConverterGlobal = 0
-    static var idForStoriesGlobal = 0
+    static var username = "jakdawis"
+    static var searchUserName = ""
+    static var postsPageId = ""
+    static var hashTagForTrends = "popular"
+    static var idForStories = 0
 
     static let headers = [
-        "x-rapidapi-key": "d9b2b7cb4dmsh880004031408bffp17ea4bjsn3c1c3cab6c71",
+        "x-rapidapi-key": "948c7b19c0msh7ccf2418ad28997p1ce081jsne28221ca96e3",
         "x-rapidapi-host": "instagram85.p.rapidapi.com"
     ]
 
     static var urlForAccountInfo: String {
-        "https://instagram85.p.rapidapi.com/account/\(accountGlobal)/info"
+        "https://instagram85.p.rapidapi.com/account/\(username)/info"
     }
 
     static var urlForPosts: String {
-        "https://instagram85.p.rapidapi.com/account/\(accountGlobal)/feed"
+        "https://instagram85.p.rapidapi.com/account/\(username)/feed"
     }
 
     static var urlForSearch: String {
-        "https://instagram85.p.rapidapi.com/account/search/\(searchUserGlobal)"
+        "https://instagram85.p.rapidapi.com/account/search/\(searchUserName)"
     }
 
     static var urlForTrends: String {
-        "https://instagram85.p.rapidapi.com/tag/\(hashTagForTrendGlobal)/feed"
+        "https://instagram85.p.rapidapi.com/tag/\(hashTagForTrends)/feed"
     }
 
-    static var urlForIdConverter: String {
-        "https://instagram85.p.rapidapi.com/convert/\(idConverterGlobal)/username"
-    }
-    
 }

@@ -77,7 +77,8 @@ class StoriesViewController: UICollectionViewController {
 extension StoriesViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = 3
-        let avalibleWidth = collectionView.frame.width - (itemsPerRow + 1)
+        let padding = 10 * (itemsPerRow + 1)
+        let avalibleWidth = collectionView.frame.width - padding
         let widthPerItem = avalibleWidth / itemsPerRow
         return CGSize(width: widthPerItem, height: 200)
     }
@@ -87,7 +88,7 @@ extension StoriesViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        1
+        10
     }
     
 }

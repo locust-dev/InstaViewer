@@ -11,8 +11,11 @@ class SearchNetworkService {
     
     private init() {}
     
-    static func fetchSearchedUsers(url: String, completion: @escaping (SearchResults) -> Void) {
-        guard let url = URL(string: url) else { return }
+    static func fetchSearchedUsers(url: String, completion: @escaping (SearchResults?) -> Void) {
+        guard let url = URL(string: url) else {
+            completion(nil)
+            return
+        }
         NetworkService.shared.getRequest(url: url) { data in
             do {
                 let searchData = try JSONDecoder().decode(SearchResultsData.self, from: data)

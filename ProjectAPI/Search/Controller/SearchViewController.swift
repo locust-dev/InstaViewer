@@ -17,6 +17,7 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
+    @IBOutlet weak var notFoundLabel: UILabel!
     
     private let storage = SearchStorageManager.shared
     private var searchedResults: [SearchedUser]?
@@ -49,26 +50,18 @@ extension SearchViewController: UITableViewDataSource {
         
         guard let results = searchedResults else {
             let choseUser = choseUsers[indexPath.row]
-            cell.cachedUser = choseUser
+            cell.configureCached(user: choseUser)
             cell.delegate = self
-            cell.profileUsername.text = choseUser.username
-            cell.profileDescription.text = choseUser.userDescription
-            cell.deleteButton.isHidden = false
-            guard let avatar = choseUser.avatar else { return cell }
-            guard let decodedData = Data(base64Encoded: avatar, options: .ignoreUnknownCharacters) else { return cell }
-            cell.profileImage.image = UIImage(data: decodedData)
             return cell
         }
         
-        cell.deleteButton.isHidden = true
         if profileAvatars.count == searchedResults?.count {
             cell.profileImage.image = profileAvatars[indexPath.row]
         } else {
             cell.profileImage.image = UIImage(named: "nullProfileImage")
         }
         
-        cell.profileUsername.text = results[indexPath.row].username
-        cell.profileDescription.text = results[indexPath.row].extraDescription
+        cell.configureSearched(searchedUser: results[indexPath.item])
         return cell
     }
 }
@@ -78,12 +71,12 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let users = searchedResults else {
-            MainApi.accountGlobal = choseUsers[indexPath.row].username ?? ""
+            MainApi.username = choseUsers[indexPath.row].username ?? ""
             return
         }
         
         let user = users[indexPath.row]
-        MainApi.accountGlobal = user.username
+        MainApi.username = user.username
         
         guard let encodedAvatar = profileAvatars[indexPath.row].jpegData(compressionQuality: 1)?.base64EncodedString() else { return }
         storage.save(user: user, avatar: encodedAvatar) { user in
@@ -98,7 +91,7 @@ extension SearchViewController: UITableViewDelegate {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, text != "" else { return }
-        MainApi.searchUserGlobal = text
+        MainApi.searchUserName = text
         indicator.startAnimating()
         searchedResults = []
         tableView.reloadData()
@@ -113,10 +106,17 @@ extension SearchViewController: UISearchBarDelegate {
             searchedResults = nil
             tableView.reloadData()
         }
+        notFoundLabel.isHidden = true
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        notFoundLabel.isHidden = true
+        searchBar.setShowsCancelButton(false, animated: true)
         view.endEditing(true)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
     }
 }
 
@@ -133,6 +133,13 @@ extension SearchViewController {
     
     private func searchUsers() {
         SearchNetworkService.fetchSearchedUsers(url: MainApi.urlForSearch) { results in
+            guard let results = results else {
+                DispatchQueue.main.async {
+                    self.indicator.stopAnimating()
+                    self.notFoundLabel.isHidden = false
+                }
+                return
+            }
             self.searchedResults = results.results
             DispatchQueue.main.async {
                 self.tableView.reloadData()

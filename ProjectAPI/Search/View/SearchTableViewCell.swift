@@ -31,6 +31,21 @@ class SearchTableViewCell: UITableViewCell {
         delegate.deleteRows(indexPath: indexPath)
     }
     
+    func configureCached(user: ChoseSearchedUser) {
+        cachedUser = user
+        profileUsername.text = user.username
+        profileDescription.text = user.userDescription
+        deleteButton.isHidden = false
+        guard let avatar = user.avatar else { return }
+        guard let decodedData = Data(base64Encoded: avatar, options: .ignoreUnknownCharacters) else { return }
+        profileImage.image = UIImage(data: decodedData)
+    }
+    
+    func configureSearched(searchedUser: SearchedUser) {
+        deleteButton.isHidden = true
+        profileUsername.text = searchedUser.username
+        profileDescription.text = searchedUser.extraDescription
+    }
 }
 
 extension SearchTableViewCell {

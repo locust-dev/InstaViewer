@@ -7,18 +7,19 @@
 
 import UIKit
 
-class ImageCell: UICollectionViewCell {
+class PostCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var playIcon: UIImageView!
     
     func configure(type: TypeOfPost) {
-        if type == .video {
+        switch type {
+        case .video:
             playIcon.isHidden = false
-        } else if type == .sidecar {
+        case .image:
             playIcon.isHidden = false
             playIcon.image = UIImage(systemName: "rectangle.stack.person.crop")
-        } else {
+        case .sidecar:
             playIcon.isHidden = true
         }
     }

@@ -68,7 +68,7 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
         
         if images.isEmpty {
             cell.image.image = UIImage(named: "nullCellImage")
@@ -98,7 +98,7 @@ extension TrendPostsViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Configure Search Bar
 extension TrendPostsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        MainApi.hashTagForTrendGlobal = searchBar.text ?? ""
+        MainApi.hashTagForTrends = searchBar.text ?? ""
         indicator.startAnimating()
         images.removeAll()
         posts = nil

@@ -13,7 +13,7 @@ class StoriesApi {
     ]
     
     static var urlForStories: String {
-        "https://instagram-stories1.p.rapidapi.com/v2/user_stories?userid=\(MainApi.idForStoriesGlobal)"
+        "https://instagram-stories1.p.rapidapi.com/v2/user_stories?userid=\(MainApi.idForStories)"
     }
     
 }
