@@ -23,19 +23,22 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var biography: UILabel!
     @IBOutlet weak var isPrivateLabel: UILabel!
     
+    var username: String? = "varlamov"
+    
     private var account: Account?
     private var stories: [Story]?
     private var hasNextPage: Bool?
+    private var idForStories: Int?
     private var accountPosts = [Post]()
-    private var images = [UIImage]()
-    
-    var username: String? = "varlamov"
-    var pageId = ""
-    var idForStories: Int?
+    private var pageId = String()
+    private var images = [UIImage]() {
+        didSet {
+            indicatorForPosts.stopAnimating()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.isHidden = true
         indicatorForInfo.startAnimating()
         fetchAccount()
     }
