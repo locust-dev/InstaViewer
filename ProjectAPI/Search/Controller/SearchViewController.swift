@@ -34,9 +34,11 @@ class SearchViewController: UIViewController {
         guard let profileVC = segue.destination as? ProfileViewController else { return }
         guard let results = searchedResults else {
             profileVC.title = choseUsers[indexPath.row].username
+            profileVC.username = choseUsers[indexPath.row].username
             return
         }
         profileVC.title = results[indexPath.row].username
+        profileVC.username = results[indexPath.row].username
     }
 }
 // MARK: - Table View Data Source
@@ -55,11 +57,9 @@ extension SearchViewController: UITableViewDataSource {
             return cell
         }
         
-        if profileAvatars.count == searchedResults?.count {
-            cell.profileImage.image = profileAvatars[indexPath.row]
-        } else {
-            cell.profileImage.image = UIImage(named: "nullProfileImage")
-        }
+        profileAvatars.indices.contains(indexPath.row)
+            ? (cell.profileImage.image = profileAvatars[indexPath.row])
+            : (cell.profileImage.image = UIImage(named: "nullProfileImage"))
         
         cell.configureSearched(searchedUser: results[indexPath.item])
         return cell
@@ -70,13 +70,8 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let users = searchedResults else {
-            MainApi.username = choseUsers[indexPath.row].username ?? ""
-            return
-        }
-        
+        guard let users = searchedResults else { return }
         let user = users[indexPath.row]
-        MainApi.username = user.username
         
         guard let encodedAvatar = profileAvatars[indexPath.row].jpegData(compressionQuality: 1)?.base64EncodedString() else { return }
         storage.save(user: user, avatar: encodedAvatar) { user in

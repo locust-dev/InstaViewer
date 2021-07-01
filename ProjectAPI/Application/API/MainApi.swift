@@ -6,25 +6,22 @@
 //
 
 class MainApi {
-    static var username = "jakdawis"
-    static var searchUserName = ""
-    static var postsPageId = ""
-    static var hashTagForTrends = "popular"
-    static var idForStories = 0
-
     static let headers = [
-        "x-rapidapi-key": "948c7b19c0msh7ccf2418ad28997p1ce081jsne28221ca96e3",
+        "x-rapidapi-key": "c1447e8f15msh1dcd3f98b4509cep131395jsnf65cb2187c6f",
         "x-rapidapi-host": "instagram85.p.rapidapi.com"
     ]
 
-    static var urlForAccountInfo: String {
+    static var searchUserName = ""
+    static var hashTagForTrends = "popular"
+
+    static func getUrlForAccountInfo(username: String) -> String {
         "https://instagram85.p.rapidapi.com/account/\(username)/info"
     }
-
-    static var urlForPosts: String {
+    
+    static func getUrlForAccountPosts(username: String) -> String {
         "https://instagram85.p.rapidapi.com/account/\(username)/feed"
     }
-
+    
     static var urlForSearch: String {
         "https://instagram85.p.rapidapi.com/account/search/\(searchUserName)"
     }

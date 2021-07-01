@@ -11,8 +11,8 @@ class ProfileNetworkService {
     
     private init() {}
     
-    static func fetchAccountInfo(from url: String, with completion: @escaping (Account) -> Void) {
-        guard let url = URL(string: url) else { return }
+    static func fetchAccountInfo(username: String, with completion: @escaping (Account) -> Void) {
+        guard let url = URL(string: MainApi.getUrlForAccountInfo(username: username)) else { return }
         NetworkService.shared.getRequest(url: url) { data in
             do {
                 let accountData = try JSONDecoder().decode(AccountData.self, from: data)
@@ -26,13 +26,13 @@ class ProfileNetworkService {
         }
     }
     
-    static func fetchProfilePosts(from url: String, with completion: @escaping (Posts) -> Void) {
-        guard let url = URL(string: url) else { return }
+    static func fetchProfilePosts(username: String, pageId: String, with completion: @escaping (Posts) -> Void) {
+        guard let url = URL(string: MainApi.getUrlForAccountPosts(username: username)) else { return }
         
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "by", value: "username"),
-            URLQueryItem(name: "pageId", value: MainApi.postsPageId)
+            URLQueryItem(name: "pageId", value: pageId)
         ]
         
         NetworkService.shared.getRequest(url: (components?.url)!) { data in
@@ -41,7 +41,7 @@ class ProfileNetworkService {
                 guard let accountPosts = Posts(postsData: postsData) else { return }
                 completion(accountPosts)
             } catch let error {
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }

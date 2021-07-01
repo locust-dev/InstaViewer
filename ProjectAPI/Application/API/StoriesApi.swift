@@ -8,12 +8,12 @@
 class StoriesApi {
     
     static let storyHeaders = [
-        "x-rapidapi-key": "1726cb85d7msh5277960294c269dp11d7c3jsn794686384758",
+        "x-rapidapi-key": "c1447e8f15msh1dcd3f98b4509cep131395jsnf65cb2187c6f",
         "x-rapidapi-host": "instagram-stories1.p.rapidapi.com"
     ]
     
-    static var urlForStories: String {
-        "https://instagram-stories1.p.rapidapi.com/v2/user_stories?userid=\(MainApi.idForStories)"
+    static func getUrlForStories(id: Int) -> String {
+        "https://instagram-stories1.p.rapidapi.com/v2/user_stories?userid=\(id)"
     }
     
 }

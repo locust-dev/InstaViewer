@@ -29,6 +29,10 @@ class ProfileViewController: UIViewController {
     private var accountPosts = [Post]()
     private var images = [UIImage]()
     
+    var username: String? = "varlamov"
+    var pageId = ""
+    var idForStories: Int?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.isHidden = true
@@ -57,28 +61,15 @@ class ProfileViewController: UIViewController {
 // MARK: - Private methods
 extension ProfileViewController {
     
-    private func setupStoryBorder() {
-        avatar.layer.borderWidth = 4
-        avatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
-    }
-    
     private func fetchAccount() {
-        ProfileNetworkService.fetchAccountInfo(from: MainApi.urlForAccountInfo) { account in
+        guard let username = username else { return }
+        ProfileNetworkService.fetchAccountInfo(username: username) { account in
             self.account = account
-            MainApi.idForStories = account.id
+            self.idForStories = account.id
+            self.fetchProfileImage(account.profileImage)
             DispatchQueue.main.async {
-                self.setupAccountUI()
-                if account.isPrivate {
-                    self.isPrivateLabel.isHidden = false
-                    self.collectionView.isHidden = true
-                } else {
-                    DispatchQueue.global().async {
-                        self.fetchStories()
-                        self.fetchPosts()
-                    }
-                }
+                self.setupAccountUI(account)
             }
-            self.fetchProfileImage(avatarUrl: account.profileImage)
         }
     }
     
@@ -86,11 +77,12 @@ extension ProfileViewController {
         DispatchQueue.main.async {
             self.indicatorForPosts.startAnimating()
         }
-        ProfileNetworkService.fetchProfilePosts(from: MainApi.urlForPosts) { loadedPosts in
+        guard let username = username else { return }
+        ProfileNetworkService.fetchProfilePosts(username: username, pageId: pageId) { loadedPosts in
             guard let posts = loadedPosts.posts else { return }
             self.accountPosts += posts
             self.hasNextPage = loadedPosts.hasNextPage
-            MainApi.postsPageId = loadedPosts.pageId
+            self.pageId = loadedPosts.pageId
             guard let posts = loadedPosts.posts else { return }
             for post in posts {
                 self.fetchPostImage(post: post)
@@ -114,7 +106,7 @@ extension ProfileViewController {
         }
     }
     
-    private func fetchProfileImage(avatarUrl: String) {
+    private func fetchProfileImage(_ avatarUrl: String) {
         NetworkService.shared.fetchImage(urlString: avatarUrl) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -128,22 +120,20 @@ extension ProfileViewController {
     }
     
     private func fetchStories() {
-        if MainApi.idForStories != 0 {
-            StoriesNetworkService.fetchStories(from: StoriesApi.urlForStories) { stories in
-                self.stories = stories
-                DispatchQueue.main.async {
-                    if !stories.isEmpty {
-                        self.setupStoryBorder()
-                        self.setupGestures()
-                    }
+        guard let id = idForStories else { return }
+        StoriesNetworkService.fetchStories(id: id) { stories in
+            self.stories = stories
+            DispatchQueue.main.async {
+                if !stories.isEmpty {
+                    self.setupStoryBorder()
+                    self.setupGestures()
                 }
             }
         }
     }
     
-    private func setupAccountUI() {
+    private func setupAccountUI(_ account: Account) {
         avatar.layer.cornerRadius = avatar.frame.height / 2
-        guard let account = account else { return }
         title = "\(account.userName)"
         indicatorForInfo.stopAnimating()
         accountInfo.isHidden = false
@@ -152,6 +142,21 @@ extension ProfileViewController {
         follow.text = account.followString
         fullName.text = account.fullName
         biography.text = account.biography
+        
+        if account.isPrivate {
+            self.isPrivateLabel.isHidden = false
+            self.collectionView.isHidden = true
+        } else {
+            DispatchQueue.global().async {
+                self.fetchStories()
+                self.fetchPosts()
+            }
+        }
+    }
+    
+    private func setupStoryBorder() {
+        avatar.layer.borderWidth = 4
+        avatar.layer.borderColor = CGColor(red: 255/255, green: 130/255, blue: 0/255, alpha: 1)
     }
     
     private func setupGestures() {
@@ -165,42 +170,8 @@ extension ProfileViewController {
     
 }
 
-
-// MARK: - Collection view Delegate & DataSourse
-extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if images.count > 0 {
-            if images.count == account?.postsCount {
-                return images.count
-            }
-            return images.count + 1
-        } else {
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if indexPath.item != images.count {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
-            
-            if images.isEmpty {
-                cell.image.image = UIImage(named: "nullCellImage")
-                return cell
-            }
-            
-            cell.image.image = images[indexPath.item]
-            guard !accountPosts.isEmpty else { return cell }
-            cell.configure(type: accountPosts[indexPath.row].type)
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell
-            cell.indicator.startAnimating()
-            return cell
-        }
-        
-    }
-    
+// MARK: - Collection view DataSourse
+extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard !accountPosts.isEmpty else { return }
         let post = accountPosts[indexPath.item]
@@ -217,17 +188,38 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
             fetchPosts()
         }
     }
+}
+
+// MARK: - Collection view DataSourse
+extension ProfileViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if images.count > 0 {
+            if images.count == account?.postsCount {
+                return images.count
+            }
+            return images.count + 1
+        } else {
+            return 0
+        }
+    }
     
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.item != images.count {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PostCollectionViewCell
+            cell.image.image = images[indexPath.item]
+            cell.configure(type: accountPosts[indexPath.row].type)
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell
+            cell.indicator.startAnimating()
+            return cell
+        }
+    }
 }
 
 // MARK: - Collection view FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        if collectionView.cellForItem(at: indexPath)?.reuseIdentifier == "indicatorCell" {
-            return CGSize(width: collectionView.frame.width, height: 50)
-        }
-        
         let itemPerRow: CGFloat = 3
         let side = (collectionView.frame.width - 4) / itemPerRow
         return CGSize(width: side, height: side)

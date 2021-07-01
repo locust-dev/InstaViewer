@@ -25,8 +25,8 @@ class StoriesNetworkService {
         }.resume()
     }
     
-    static func fetchStories(from url: String, with completion: @escaping ([Story]) -> Void) {
-        guard let url = URL(string: url) else { return }
+    static func fetchStories(id: Int, with completion: @escaping ([Story]) -> Void) {
+        guard let url = URL(string: StoriesApi.getUrlForStories(id: id)) else { return }
         
         createStoriesRequest(url: url) { data in
             do {
