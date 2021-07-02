@@ -284,7 +284,7 @@
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="trailing" secondItem="rZ9-bL-SRO" secondAttribute="trailing" constant="16" id="Cbv-JA-98I"/>
-                                                    <constraint firstAttribute="height" constant="200" id="Fwq-6E-5oU"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="Fwq-6E-5oU"/>
                                                     <constraint firstAttribute="trailing" secondItem="g8h-bO-24L" secondAttribute="trailing" constant="100" id="TgC-l6-XLV"/>
                                                     <constraint firstAttribute="bottom" secondItem="rZ9-bL-SRO" secondAttribute="bottom" constant="25" id="ZYi-UG-dvk"/>
                                                     <constraint firstItem="rZ9-bL-SRO" firstAttribute="top" secondItem="v0R-Gm-XOR" secondAttribute="top" constant="10" id="aX8-T7-QhC"/>

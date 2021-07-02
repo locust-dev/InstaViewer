@@ -31,11 +31,7 @@ class ProfileViewController: UIViewController {
     private var idForStories: Int?
     private var accountPosts = [Post]()
     private var pageId = String()
-    private var images = [UIImage]() {
-        didSet {
-            indicatorForPosts.stopAnimating()
-        }
-    }
+    private var images = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,7 +74,9 @@ extension ProfileViewController {
     
     private func fetchPosts() {
         DispatchQueue.main.async {
-            self.indicatorForPosts.startAnimating()
+            if self.images.isEmpty {
+                self.indicatorForPosts.startAnimating()
+            }
         }
         guard let username = username else { return }
         ProfileNetworkService.fetchProfilePosts(username: username, pageId: pageId) { loadedPosts in
@@ -189,6 +187,7 @@ extension ProfileViewController: UICollectionViewDelegate {
         guard let hasNextPage = hasNextPage else { return }
         if indexPath.row == accountPosts.count && hasNextPage {
             fetchPosts()
+            print("showed")
         }
     }
 }
