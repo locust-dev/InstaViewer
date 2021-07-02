@@ -12,19 +12,20 @@ class ProfileViewController: UIViewController {
     
     @IBOutlet weak var indicatorForInfo: UIActivityIndicatorView!
     @IBOutlet weak var indicatorForPosts: UIActivityIndicatorView!
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var accountInfo: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var avatar: UIImageView!
     @IBOutlet weak var mainStackHeight: NSLayoutConstraint!
     @IBOutlet weak var mainView: UIView!
     
-    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var postsCount: UILabel!
     @IBOutlet weak var followed: UILabel!
     @IBOutlet weak var follow: UILabel!
     @IBOutlet weak var fullName: UILabel!
     @IBOutlet weak var biography: UILabel!
     @IBOutlet weak var isPrivateLabel: UILabel!
+    @IBOutlet weak var website: UILabel!
     
     var username: String? = "varlamov"
     
@@ -166,10 +167,10 @@ extension ProfileViewController {
         follow.text = account.followString
         fullName.text = account.fullName
         biography.text = account.biography
+        website.text = account.website
         
         if account.isPrivate {
             self.isPrivateLabel.isHidden = false
-            self.collectionView.isHidden = true
         } else {
             DispatchQueue.global().async {
                 self.fetchStories()

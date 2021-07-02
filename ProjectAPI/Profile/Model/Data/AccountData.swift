@@ -17,6 +17,7 @@ struct Info: Decodable {
     let id: Int?
     let figures: Figures?
     let isPrivate: Bool?
+    let website: String?
     
     enum CodingKeys: String, CodingKey {
         case figures = "figures"
@@ -26,6 +27,7 @@ struct Info: Decodable {
         case biography = "biography"
         case id = "id"
         case isPrivate = "is_private"
+        case website = "website"
     }
 }
 

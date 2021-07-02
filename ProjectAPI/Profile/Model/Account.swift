@@ -12,6 +12,7 @@ struct Account {
     let profileImage: String
     let id: Int
     let isPrivate: Bool
+    let website: String
     
     let followed: Int
     var followedString: String {
@@ -38,5 +39,6 @@ struct Account {
         postsCount = accountData.data.figures?.posts ?? 0
         id = accountData.data.id ?? 0
         isPrivate = accountData.data.isPrivate ?? true
+        website = accountData.data.website ?? ""
     }
 }
