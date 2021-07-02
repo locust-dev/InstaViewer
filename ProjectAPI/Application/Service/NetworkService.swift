@@ -16,7 +16,7 @@ class NetworkService {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = MainApi.headers
-        
+        print("request created")
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else { return }
             completion(data)

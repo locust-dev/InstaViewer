@@ -38,6 +38,7 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureRefreshControl()
         mainStackHeight.constant = view.frame.height
         indicatorForInfo.startAnimating()
         fetchAccount()
@@ -245,10 +246,10 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
         }
     }
     
-
+    
 }
 
-// MARK: - Scroll view delegate
+// MARK: - Scroll view configure
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let height = scrollView.frame.size.height
@@ -259,4 +260,32 @@ extension ProfileViewController: UIScrollViewDelegate {
             scrollView.delegate = nil
         }
     }
+    
+    private func configureRefreshControl () {
+        scrollView.refreshControl = UIRefreshControl()
+        scrollView.refreshControl?.tintColor = .white
+        scrollView.refreshControl?.addTarget(self, action:
+                                                #selector(refresh),
+                                             for: .valueChanged)
+    }
+    
+    @objc private func refresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            self.scrollView.refreshControl?.endRefreshing()
+            self.account = nil
+            self.stories = nil
+            self.hasNextPage = nil
+            self.idForStories = nil
+            self.accountPosts.removeAll()
+            self.pageId = ""
+            self.images.removeAll()
+            self.accountInfo.isHidden = true
+            self.viewDidLoad()
+            self.collectionView.reloadData()
+            DispatchQueue.global().async {
+                self.fetchAccount()
+            }
+        }
+    }
+    
 }

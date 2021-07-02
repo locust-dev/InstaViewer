@@ -8,7 +8,7 @@
 class MainApi {
     
     static let headers = [
-        "x-rapidapi-key": "709ab3138amsh3525c0b23c2b947p1536e9jsnad70bd5723e4",
+        "x-rapidapi-key": "7a2d322f50mshfeefe8dd7143491p1b7e1fjsn79e4fe68bc78",
         "x-rapidapi-host": "instagram85.p.rapidapi.com"
     ]
 
