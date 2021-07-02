@@ -72,13 +72,11 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendsCell", for: indexPath) as! PostCollectionViewCell
         
         if images.isEmpty {
-            cell.image.image = UIImage(named: "nullCellImage")
+            cell.postImage.image = UIImage(named: "nullCellImage")
             return cell
         }
-        
-        cell.image.image = images[indexPath.item]
-        guard let posts = posts else { return cell }
-        cell.configure(type: posts[indexPath.row].type)
+
+        cell.configure(type: posts![indexPath.row].type, image: images[indexPath.item])
         return cell
     }
     

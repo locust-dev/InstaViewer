@@ -9,10 +9,11 @@ import UIKit
 
 class PostCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var postImage: UIImageView!
     @IBOutlet weak var playIcon: UIImageView!
     
-    func configure(type: TypeOfPost) {
+    func configure(type: TypeOfPost, image: UIImage) {
+        postImage.image = image
         if type == .video {
             playIcon.isHidden = false
         } else {

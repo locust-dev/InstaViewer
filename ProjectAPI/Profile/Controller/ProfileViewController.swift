@@ -15,7 +15,10 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var accountInfo: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var avatar: UIImageView!
+    @IBOutlet weak var mainStackHeight: NSLayoutConstraint!
+    @IBOutlet weak var mainView: UIView!
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var postsCount: UILabel!
     @IBOutlet weak var followed: UILabel!
     @IBOutlet weak var follow: UILabel!
@@ -35,6 +38,7 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mainStackHeight.constant = view.frame.height
         indicatorForInfo.startAnimating()
         fetchAccount()
     }
@@ -52,6 +56,16 @@ class ProfileViewController: UIViewController {
             detailVC.post = accountPosts[indexPath.item]
             detailVC.username = account?.userName
             detailVC.avatar = account?.profileImage
+        }
+    }
+    
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "contentSize" {
+            if let newValue = change?[.newKey] {
+                let newSize = newValue as! CGSize
+                mainStackHeight.constant = newSize.height + mainView.frame.height
+            }
         }
     }
     
@@ -74,6 +88,7 @@ extension ProfileViewController {
     
     private func fetchPosts() {
         DispatchQueue.main.async {
+            self.collectionView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
             if self.images.isEmpty {
                 self.indicatorForPosts.startAnimating()
             }
@@ -88,11 +103,18 @@ extension ProfileViewController {
             for post in posts {
                 self.fetchPostImage(post: post)
             }
+            DispatchQueue.main.async {
+                guard let nextPage = self.hasNextPage else { return }
+                if nextPage {
+                    self.scrollView.delegate = self
+                }
+            }
         }
     }
     
     private func fetchPostImage(post: Post) {
-        NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
+        guard let url = post.squarePostImage.first else { return }
+        NetworkService.shared.fetchImage(urlString: url) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):
@@ -101,7 +123,7 @@ extension ProfileViewController {
                     self.collectionView.reloadData()
                     self.indicatorForPosts.stopAnimating()
                 case .failure(_):
-                    return
+                    self.images.append(UIImage(named: "nullCellImage")!)
                 }
             }
         }
@@ -171,7 +193,7 @@ extension ProfileViewController {
     
 }
 
-// MARK: - Collection view DataSourse
+// MARK: - Collection view Delegate
 extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard !accountPosts.isEmpty else { return }
@@ -180,14 +202,6 @@ extension ProfileViewController: UICollectionViewDelegate {
         case .video: play(urlString: post.video)
         case .image: performSegue(withIdentifier: "toDetail", sender: nil)
         case .sidecar: performSegue(withIdentifier: "toDetail", sender: nil)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let hasNextPage = hasNextPage else { return }
-        if indexPath.row == accountPosts.count && hasNextPage {
-            fetchPosts()
-            print("showed")
         }
     }
 }
@@ -208,8 +222,7 @@ extension ProfileViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item != images.count {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postCell", for: indexPath) as! PostCollectionViewCell
-            cell.image.image = images[indexPath.item]
-            cell.configure(type: accountPosts[indexPath.row].type)
+            cell.configure(type: accountPosts[indexPath.row].type, image: images[indexPath.item])
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell
@@ -223,23 +236,27 @@ extension ProfileViewController: UICollectionViewDataSource {
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let width: CGFloat
-        let height: CGFloat
-        
         if indexPath.item == images.count {
-            width = collectionView.frame.width
-            height = 100
+            return CGSize(width: collectionView.frame.width, height: 80)
         } else {
             let itemPerRow: CGFloat = 3
             let side = (collectionView.frame.width - 4) / itemPerRow
-            width = side
-            height = side
+            return CGSize(width: side, height: side)
         }
-
-        return CGSize(width: width, height: height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        1
+
+}
+
+// MARK: - Scroll view delegate
+extension ProfileViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.frame.size.height
+        let contentYoffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        if distanceFromBottom < height {
+            fetchPosts()
+            scrollView.delegate = nil
+        }
     }
 }

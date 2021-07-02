@@ -176,7 +176,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvG-CL-kG0">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vvG-CL-kG0">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
                                 <subviews>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This account is private." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwH-89-oO0">
@@ -186,7 +186,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2o6-Kq-Kdx">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="500"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v0R-Gm-XOR">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
@@ -293,10 +293,10 @@
                                                     <constraint firstItem="g8h-bO-24L" firstAttribute="leading" secondItem="v0R-Gm-XOR" secondAttribute="leading" constant="100" id="qs1-Os-1UJ"/>
                                                 </constraints>
                                             </view>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WQ6-A8-87O">
-                                                <rect key="frame" x="0.0" y="200" width="414" height="525"/>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WQ6-A8-87O">
+                                                <rect key="frame" x="0.0" y="200" width="414" height="300"/>
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="h6R-77-0Kk">
+                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="0.0" id="h6R-77-0Kk">
                                                     <size key="itemSize" width="120" height="143"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -332,8 +332,8 @@
                                                         </collectionViewCellContentView>
                                                         <size key="customSize" width="120" height="143"/>
                                                         <connections>
-                                                            <outlet property="image" destination="ZRC-FZ-7tD" id="E8d-ab-DrM"/>
                                                             <outlet property="playIcon" destination="4gA-Ob-G0G" id="KwD-7P-CFF"/>
+                                                            <outlet property="postImage" destination="ZRC-FZ-7tD" id="E8d-ab-DrM"/>
                                                         </connections>
                                                     </collectionViewCell>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="indicatorCell" id="ct8-Vz-GV2" customClass="IndicatorCell" customModule="ProjectAPI" customModuleProvider="target">
@@ -364,6 +364,9 @@
                                                 </connections>
                                             </collectionView>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="500" id="QpR-ix-uJp"/>
+                                        </constraints>
                                     </stackView>
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="fgN-uj-rug">
                                         <rect key="frame" x="188.5" y="260" width="37" height="37"/>
@@ -409,7 +412,10 @@
                         <outlet property="indicatorForInfo" destination="g8h-bO-24L" id="7RT-gi-aH8"/>
                         <outlet property="indicatorForPosts" destination="fgN-uj-rug" id="Tnu-BO-0sz"/>
                         <outlet property="isPrivateLabel" destination="VwH-89-oO0" id="WMq-wy-l8w"/>
+                        <outlet property="mainStackHeight" destination="QpR-ix-uJp" id="iTr-DN-lZ4"/>
+                        <outlet property="mainView" destination="v0R-Gm-XOR" id="4dq-yp-tff"/>
                         <outlet property="postsCount" destination="EHj-7E-8xd" id="7fI-lL-DTC"/>
+                        <outlet property="scrollView" destination="vvG-CL-kG0" id="jms-Yc-Qce"/>
                         <segue destination="2qC-04-Hyy" kind="show" identifier="toStories" id="WLe-hb-gNx"/>
                         <segue destination="obh-gx-9gY" kind="show" identifier="toDetail" id="bls-em-5gZ"/>
                     </connections>
@@ -713,8 +719,8 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="128" height="128"/>
                                         <connections>
-                                            <outlet property="image" destination="BhM-Ih-XSL" id="gaw-lW-bf2"/>
                                             <outlet property="playIcon" destination="9L0-bk-QbI" id="egI-mm-whV"/>
+                                            <outlet property="postImage" destination="BhM-Ih-XSL" id="gaw-lW-bf2"/>
                                             <segue destination="obh-gx-9gY" kind="show" id="dzf-Fu-qOf"/>
                                         </connections>
                                     </collectionViewCell>
