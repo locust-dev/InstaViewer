@@ -12,6 +12,9 @@ struct SearchResults {
     
     init?(searchData: SearchResultsData) {
         results = SearchedUser.getSearchedUsers(searchData: searchData)
+        if results.isEmpty {
+            return nil
+        }
     }
 }
 

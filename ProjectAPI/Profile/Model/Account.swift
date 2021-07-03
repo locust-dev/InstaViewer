@@ -6,8 +6,8 @@
 //
 
 struct Account {
-    let fullName: String
     let userName: String
+    let fullName: String
     let biography: String
     let profileImage: String
     let id: Int
@@ -30,8 +30,9 @@ struct Account {
     }
     
     init?(accountData: AccountData) {
+        guard let username = accountData.data.userName else { return nil }
+        userName = username
         fullName = accountData.data.fullName ?? "Null"
-        userName = accountData.data.userName ?? "Null"
         biography = accountData.data.biography ?? "Null"
         profileImage = accountData.data.profileImage?.hd ?? "Null"
         followed = accountData.data.figures?.followers ?? 0

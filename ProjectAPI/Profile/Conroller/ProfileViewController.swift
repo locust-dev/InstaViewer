@@ -89,6 +89,11 @@ extension ProfileViewController {
                 }
             case .failure(let error):
                 print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.indicatorForInfo.stopAnimating()
+                    self.isPrivateLabel.isHidden = false
+                    self.isPrivateLabel.text = "Something went wrong. Try to refresh the page."
+                }
             }
         }
     }
@@ -284,6 +289,7 @@ extension ProfileViewController: UIScrollViewDelegate {
     @objc private func refresh() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
             guard let self = self else { return }
+            self.isPrivateLabel.isHidden = true
             self.scrollView.refreshControl?.endRefreshing()
             self.account = nil
             self.stories = nil

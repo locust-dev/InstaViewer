@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19115.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Nmf-Gg-YaW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19115.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Nmf-Gg-YaW">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19107.4"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19107.5"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -150,6 +151,7 @@
                             <constraint firstItem="N85-39-yzr" firstAttribute="leading" secondItem="HWb-yM-n2Y" secondAttribute="leading" id="BSL-VB-hJz"/>
                             <constraint firstItem="zQA-3O-wdE" firstAttribute="leading" secondItem="HWb-yM-n2Y" secondAttribute="leading" id="D7O-es-FV6"/>
                             <constraint firstItem="zQA-3O-wdE" firstAttribute="top" secondItem="N85-39-yzr" secondAttribute="bottom" id="E31-1x-hS9"/>
+                            <constraint firstItem="LrS-dU-zIN" firstAttribute="top" secondItem="N85-39-yzr" secondAttribute="bottom" constant="82" id="Szs-Ji-KEv"/>
                             <constraint firstItem="LrS-dU-zIN" firstAttribute="centerX" secondItem="HDf-rW-l3C" secondAttribute="centerX" id="e8B-cG-iQ4"/>
                             <constraint firstItem="LrS-dU-zIN" firstAttribute="top" secondItem="6VS-vf-4PV" secondAttribute="bottom" constant="5" id="kcZ-ew-cFa"/>
                             <constraint firstItem="HWb-yM-n2Y" firstAttribute="bottom" secondItem="zQA-3O-wdE" secondAttribute="bottom" id="l2h-7W-2eS"/>
