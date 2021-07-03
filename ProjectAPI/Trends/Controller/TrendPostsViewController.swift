@@ -37,9 +37,14 @@ class TrendPostsViewController: UIViewController {
     
     private func fetchPosts() {
         indicator.startAnimating()
-        TrendsNetworkService.fetchTrendPosts(hashtag: hashtagForTrends) { loadedPosts in
-            self.posts = loadedPosts.posts
-            self.fetchImagesFromPosts()
+        TrendsNetworkService.fetchTrendPosts(hashtag: hashtagForTrends) { results in
+            switch results {
+            case .success(let loadedPosts):
+                self.posts = loadedPosts.posts
+                self.fetchImagesFromPosts()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
     

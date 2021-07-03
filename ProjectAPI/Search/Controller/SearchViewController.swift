@@ -82,6 +82,56 @@ extension SearchViewController: UITableViewDelegate {
     
 }
 
+// MARK: Private Methods
+extension SearchViewController {
+    private func getUsersFromStorage() {
+        storage.fetchData { result in
+            switch result {
+            case .success(let users): choseUsers = users
+            case .failure(let error): print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func searchUsers() {
+        SearchNetworkService.fetchSearchedUsers(username: seachedUsername) { result in
+            switch result {
+            case .success(let searchedResults):
+                self.searchedResults = searchedResults.results
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.indicator.stopAnimating()
+                }
+                self.fetchAvatars(from: searchedResults.results)
+            case .failure(let error):
+                print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.indicator.stopAnimating()
+                    self.notFoundLabel.isHidden = false
+                }
+            }
+        }
+    }
+    
+    private func fetchAvatars(from users: [SearchedUser]) {
+        profileAvatars.removeAll()
+        for user in users {
+            NetworkService.shared.fetchImage(urlString: user.picture ?? "") { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        self.profileAvatars.append(image)
+                        self.tableView.reloadData()
+                    case .failure(_):
+                        let image = UIImage(named: "nullProfileImage")!
+                        self.profileAvatars.append(image)
+                    }
+                }
+            }
+        }
+    }
+    
+}
 
 // MARK: - Configure Search Bar
 extension SearchViewController: UISearchBarDelegate {
@@ -114,55 +164,6 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(true, animated: true)
     }
-}
-
-// MARK: Private Methods
-extension SearchViewController {
-    private func getUsersFromStorage() {
-        storage.fetchData { result in
-            switch result {
-            case .success(let users): choseUsers = users
-            case .failure(let error): print(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func searchUsers() {
-        SearchNetworkService.fetchSearchedUsers(username: seachedUsername) { results in
-            guard let results = results else {
-                DispatchQueue.main.async {
-                    self.indicator.stopAnimating()
-                    self.notFoundLabel.isHidden = false
-                }
-                return
-            }
-            self.searchedResults = results.results
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.indicator.stopAnimating()
-            }
-            self.fetchAvatars(from: results.results)
-        }
-    }
-    
-    private func fetchAvatars(from users: [SearchedUser]) {
-        profileAvatars.removeAll()
-        for user in users {
-            NetworkService.shared.fetchImage(urlString: user.picture ?? "") { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let image):
-                        self.profileAvatars.append(image)
-                        self.tableView.reloadData()
-                    case .failure(_):
-                        let image = UIImage(named: "nullProfileImage")!
-                        self.profileAvatars.append(image)
-                    }
-                }
-            }
-        }
-    }
-    
 }
 
 // MARK: - Search Cell Delegate

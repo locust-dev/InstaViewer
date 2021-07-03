@@ -11,23 +11,38 @@ class ProfileNetworkService {
     
     private init() {}
     
-    static func fetchAccountInfo(username: String, with completion: @escaping (Account) -> Void) {
-        guard let url = URL(string: MainApi.getUrlForAccountInfo(username: username)) else { return }
-        NetworkService.shared.getRequest(url: url) { data in
-            do {
-                let accountData = try JSONDecoder().decode(AccountData.self, from: data)
-                guard let account = Account(accountData: accountData) else {
-                    return
+    static func fetchAccountInfo(username: String, with completion: @escaping (Result<Account, NetworkErrors>) -> Void) {
+        let urlString = MainApi.getUrlForAccountInfo(username: username)
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.createUrlError))
+            return
+        }
+        NetworkService.shared.getData(url: url) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let accountData = try JSONDecoder().decode(AccountData.self, from: data)
+                    guard let account = Account(accountData: accountData) else {
+                        completion(.failure(.createObjectError))
+                        return
+                    }
+                    completion(.success(account))
+                } catch let error {
+                    completion(.failure(.jsonDecodeError))
+                    print(error)
                 }
-                completion(account)
-            } catch let error {
-                print(error.localizedDescription)
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
     
-    static func fetchProfilePosts(username: String, pageId: String, with completion: @escaping (Posts) -> Void) {
-        guard let url = URL(string: MainApi.getUrlForAccountPosts(username: username)) else { return }
+    static func fetchPosts(username: String, pageId: String, with completion: @escaping (Result<Posts, NetworkErrors>) -> Void) {
+        let urlString = MainApi.getUrlForAccountPosts(username: username)
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.createUrlError))
+            return
+        }
         
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         components?.queryItems = [
@@ -35,13 +50,23 @@ class ProfileNetworkService {
             URLQueryItem(name: "pageId", value: pageId)
         ]
         
-        NetworkService.shared.getRequest(url: (components?.url)!) { data in
-            do {
-                let postsData = try JSONDecoder().decode(PostsData.self, from: data)
-                guard let accountPosts = Posts(postsData: postsData) else { return }
-                completion(accountPosts)
-            } catch let error {
-                print(error.localizedDescription)
+        guard let url = components?.url else { return }
+        NetworkService.shared.getData(url: url) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let postsData = try JSONDecoder().decode(PostsData.self, from: data)
+                    guard let accountPosts = Posts(postsData: postsData) else {
+                        completion(.failure(.createObjectError))
+                        return
+                    }
+                    completion(.success(accountPosts))
+                } catch let error {
+                    completion(.failure(.jsonDecodeError))
+                    print(error)
+                }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }

@@ -50,11 +50,11 @@ class SearchTableViewCell: UITableViewCell {
 
 // MARK: - Get superview and self index
 extension SearchTableViewCell {
-    var tableView: UITableView? {
+    private var tableView: UITableView? {
         return superview as? UITableView
     }
 
-    var indexPath: IndexPath? {
+    private var indexPath: IndexPath? {
         return tableView?.indexPath(for: self)
     }
 }

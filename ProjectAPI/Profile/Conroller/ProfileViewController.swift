@@ -39,9 +39,9 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureRefreshControl()
         mainStackHeight.constant = view.frame.height
         indicatorForInfo.startAnimating()
+        configureRefreshControl()
         fetchAccount()
     }
     
@@ -78,12 +78,17 @@ extension ProfileViewController {
     
     private func fetchAccount() {
         guard let username = username else { return }
-        ProfileNetworkService.fetchAccountInfo(username: username) { account in
-            self.account = account
-            self.idForStories = account.id
-            self.fetchProfileImage(account.profileImage)
-            DispatchQueue.main.async {
-                self.setupAccountUI(account)
+        ProfileNetworkService.fetchAccountInfo(username: username) { result in
+            switch result {
+            case .success(let account):
+                self.account = account
+                self.idForStories = account.id
+                self.fetchProfileImage(account.profileImage)
+                DispatchQueue.main.async {
+                    self.setupAccountUI(account)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
@@ -96,21 +101,27 @@ extension ProfileViewController {
             }
         }
         guard let username = username else { return }
-        ProfileNetworkService.fetchProfilePosts(username: username, pageId: pageId) { loadedPosts in
-            guard let posts = loadedPosts.posts else { return }
-            self.accountPosts += posts
-            self.hasNextPage = loadedPosts.hasNextPage
-            self.pageId = loadedPosts.pageId
-            guard let posts = loadedPosts.posts else { return }
-            for post in posts {
-                self.fetchPostImage(post: post)
-            }
-            DispatchQueue.main.async {
-                guard let nextPage = self.hasNextPage else { return }
-                if nextPage {
-                    self.scrollView.delegate = self
+        ProfileNetworkService.fetchPosts(username: username, pageId: pageId) { result in
+            switch result {
+            case .success(let postsData):
+                guard let posts = postsData.posts else { return }
+                self.accountPosts += posts
+                self.hasNextPage = postsData.hasNextPage
+                self.pageId = postsData.pageId
+                guard let posts = postsData.posts else { return }
+                for post in posts {
+                    self.fetchPostImage(post: post)
                 }
+                DispatchQueue.main.async {
+                    guard let nextPage = self.hasNextPage else { return }
+                    if nextPage {
+                        self.scrollView.delegate = self
+                    }
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
             }
+            
         }
     }
     
@@ -124,7 +135,8 @@ extension ProfileViewController {
                     self.collectionView.isHidden = false
                     self.collectionView.reloadData()
                     self.indicatorForPosts.stopAnimating()
-                case .failure(_):
+                case .failure(let error):
+                    print(error.localizedDescription)
                     self.images.append(UIImage(named: "nullCellImage")!)
                 }
             }
@@ -137,7 +149,8 @@ extension ProfileViewController {
                 switch result {
                 case .success(let image):
                     self.avatar.image = image
-                case .failure(_):
+                case .failure(let error):
+                    print(error.localizedDescription)
                     self.avatar.image = UIImage(named: "nullProfileImage")
                 }
             }
@@ -265,13 +278,12 @@ extension ProfileViewController: UIScrollViewDelegate {
     private func configureRefreshControl () {
         scrollView.refreshControl = UIRefreshControl()
         scrollView.refreshControl?.tintColor = .white
-        scrollView.refreshControl?.addTarget(self, action:
-                                                #selector(refresh),
-                                             for: .valueChanged)
+        scrollView.refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
     @objc private func refresh() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+            guard let self = self else { return }
             self.scrollView.refreshControl?.endRefreshing()
             self.account = nil
             self.stories = nil

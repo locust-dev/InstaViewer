@@ -12,26 +12,34 @@ class NetworkService {
     static let shared = NetworkService()
     private init() {}
     
-    func getRequest(url: URL, with completion: @escaping (Data) -> Void) {
+    func getData(url: URL, with completion: @escaping (Result<Data, NetworkErrors>) -> Void) {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = MainApi.headers
-        print("request created")
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else { return }
-            completion(data)
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let _ = error {
+                completion(.failure(.createRequestError))
+                return
+            }
+            
+            if let data = data {
+                completion(.success(data))
+            } else {
+                completion(.failure(.emptyDataFromRequest))
+            }
         }.resume()
-    }   
+    }
     
-    func fetchImage(urlString: String, completion: @escaping (Result<UIImage, ErrorHangler>) -> Void) {
+    func fetchImage(urlString: String, completion: @escaping (Result<UIImage, NetworkErrors>) -> Void) {
         guard let url = URL(string: urlString) else {
-            completion(.failure(.urlCreateError))
+            completion(.failure(.createUrlError))
             return }
         guard let imageData = try? Data(contentsOf: url) else {
-            completion(.failure(.createDataError))
+            completion(.failure(.createImageFromDataError))
             return }
         guard let image = UIImage(data: imageData) else {
-            completion(.failure(.downloadImageError))
+            completion(.failure(.createImageFromDataError))
             return
         }
         completion(.success(image))
