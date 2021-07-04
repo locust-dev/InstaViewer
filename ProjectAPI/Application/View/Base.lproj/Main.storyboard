@@ -709,26 +709,16 @@
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="BhM-Ih-XSL">
                                                     <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                 </imageView>
-                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="9L0-bk-QbI">
-                                                    <rect key="frame" x="5" y="6.5" width="25" height="21.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="25" id="igg-Xl-Oya"/>
-                                                        <constraint firstAttribute="height" constant="25" id="je9-dE-Bbf"/>
-                                                    </constraints>
-                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="BhM-Ih-XSL" firstAttribute="leading" secondItem="R3P-r6-pW4" secondAttribute="leading" id="3lg-3O-LUC"/>
-                                                <constraint firstItem="9L0-bk-QbI" firstAttribute="leading" secondItem="BhM-Ih-XSL" secondAttribute="leading" constant="5" id="7y7-cQ-GJt"/>
                                                 <constraint firstItem="BhM-Ih-XSL" firstAttribute="top" secondItem="R3P-r6-pW4" secondAttribute="top" id="Blc-7X-1DI"/>
-                                                <constraint firstItem="9L0-bk-QbI" firstAttribute="top" secondItem="BhM-Ih-XSL" secondAttribute="top" constant="5" id="GaA-WD-Kte"/>
                                                 <constraint firstAttribute="trailing" secondItem="BhM-Ih-XSL" secondAttribute="trailing" id="XwA-0y-rJn"/>
                                                 <constraint firstAttribute="bottom" secondItem="BhM-Ih-XSL" secondAttribute="bottom" id="jQx-H4-fRn"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="128" height="128"/>
                                         <connections>
-                                            <outlet property="playIcon" destination="9L0-bk-QbI" id="egI-mm-whV"/>
                                             <outlet property="postImage" destination="BhM-Ih-XSL" id="gaw-lW-bf2"/>
                                             <segue destination="obh-gx-9gY" kind="show" id="dzf-Fu-qOf"/>
                                         </connections>

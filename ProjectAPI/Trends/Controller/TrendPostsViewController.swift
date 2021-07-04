@@ -37,7 +37,6 @@ class TrendPostsViewController: UIViewController {
     }
     
     private func fetchPosts() {
-        guard let posts = postsInfo, !posts.posts.isEmpty else { return }
         indicator.startAnimating()
         TrendsNetworkService.fetchTrendPosts(hashtag: hashtagForTrends) { results in
             switch results {
@@ -48,7 +47,7 @@ class TrendPostsViewController: UIViewController {
                 print(error.localizedDescription)
                 DispatchQueue.main.async {
                     self.indicator.stopAnimating()
-                    self.wentWrong.isHidden = true
+                    self.wentWrong.isHidden = false
                 }
             }
         }
@@ -75,7 +74,8 @@ class TrendPostsViewController: UIViewController {
     
 }
 
-extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: - Collection view data source
+extension TrendPostsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if images.count > 0 {
             if images.count == postsInfo?.posts.count {
@@ -90,8 +90,7 @@ extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item != images.count {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendsCell", for: indexPath) as! PostCollectionViewCell
-            guard let posts = postsInfo else { return cell }
-            cell.configure(type: posts.posts[indexPath.row].type, image: images[indexPath.item])
+            cell.postImage.image = images[indexPath.row]
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell

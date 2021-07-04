@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreData
 
 protocol SearchCellDelegate {
     func deleteRows(indexPath: IndexPath)
@@ -82,7 +81,7 @@ extension SearchViewController: UITableViewDelegate {
     
 }
 
-// MARK: Private Methods
+// MARK: - Private Methods
 extension SearchViewController {
     private func getUsersFromStorage() {
         storage.fetchData { result in
