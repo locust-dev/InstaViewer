@@ -13,8 +13,9 @@ class TrendPostsViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
+    @IBOutlet weak var wentWrong: UILabel!
     
-    private var posts: [Post]?
+    private var postsInfo: Posts?
     private var images = [UIImage]()
     private var hashtagForTrends = "popular"
     
@@ -30,36 +31,42 @@ class TrendPostsViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let detailPostVC = segue.destination as? DetailPostViewController else { return }
-        guard let posts = posts else { return }
+        guard let posts = postsInfo?.posts else { return }
         guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
         detailPostVC.post = posts[indexPath.item]
     }
     
     private func fetchPosts() {
+        guard let posts = postsInfo, !posts.posts.isEmpty else { return }
         indicator.startAnimating()
         TrendsNetworkService.fetchTrendPosts(hashtag: hashtagForTrends) { results in
             switch results {
             case .success(let loadedPosts):
-                self.posts = loadedPosts.posts
+                self.postsInfo = loadedPosts
                 self.fetchImagesFromPosts()
             case .failure(let error):
                 print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.indicator.stopAnimating()
+                    self.wentWrong.isHidden = true
+                }
             }
         }
     }
     
     private func fetchImagesFromPosts() {
-        guard let posts = posts else { return }
-        for post in posts {
-            NetworkService.shared.fetchImage(urlString: post.squarePostImage.first ?? "") { result in
+        guard let posts = postsInfo else { return }
+        for post in posts.posts {
+            NetworkService.shared.fetchImage(urlString: post.squarePostImage) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let image):
                         self.images.append(image)
                         self.collectionView.reloadData()
                         self.indicator.stopAnimating()
-                    case .failure(_):
-                        return
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        self.images.append(UIImage(named: "nullCellImage")!)
                     }
                 }
             }
@@ -70,19 +77,27 @@ class TrendPostsViewController: UIViewController {
 
 extension TrendPostsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        images.count
+        if images.count > 0 {
+            if images.count == postsInfo?.posts.count {
+                return images.count
+            }
+            return images.count + 1
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendsCell", for: indexPath) as! PostCollectionViewCell
-        
-        if images.isEmpty {
-            cell.postImage.image = UIImage(named: "nullCellImage")
+        if indexPath.item != images.count {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendsCell", for: indexPath) as! PostCollectionViewCell
+            guard let posts = postsInfo else { return cell }
+            cell.configure(type: posts.posts[indexPath.row].type, image: images[indexPath.item])
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "indicatorCell", for: indexPath) as! IndicatorCell
+            cell.indicator.startAnimating()
             return cell
         }
-
-        cell.configure(type: posts![indexPath.row].type, image: images[indexPath.item])
-        return cell
     }
     
 }
@@ -105,7 +120,7 @@ extension TrendPostsViewController: UISearchBarDelegate {
         hashtagForTrends = searchBar.text ?? ""
         indicator.startAnimating()
         images.removeAll()
-        posts = nil
+        postsInfo = nil
         collectionView.reloadData()
         view.endEditing(true)
         DispatchQueue.global().async {

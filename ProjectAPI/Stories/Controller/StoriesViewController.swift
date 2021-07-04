@@ -11,7 +11,7 @@ import AVKit
 class StoriesViewController: UICollectionViewController {
     
     var username: String?
-    var stories: [Story]!
+    var storiesData: Stories!
     private var thumbnails = [UIImage]()
     
     override func viewDidLoad() {
@@ -19,7 +19,17 @@ class StoriesViewController: UICollectionViewController {
         title = username
         fetchThumbnails()
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
+        guard let detailVC = segue.destination as? DetailPostViewController else { return }
+        detailVC.imageUrl = storiesData.stories[indexPath.item].url
+    }
     
+}
+
+// MARK: - Collection view data source
+extension StoriesViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         thumbnails.count
     }
@@ -28,31 +38,27 @@ class StoriesViewController: UICollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "storyCell", for: indexPath) as! StoriesCell
         let image = thumbnails[indexPath.item]
         cell.configureCell(image: image)
-        cell.story = stories[indexPath.item]
+        cell.story = storiesData.stories[indexPath.item]
         return cell
     }
-    
+}
+
+// MARK: - Collection view delegate
+extension StoriesViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let story = stories[indexPath.item]
+        let story = storiesData.stories[indexPath.item]
         story.mediaType == .video
             ? play(urlString: story.url)
             : performSegue(withIdentifier: "toDetail", sender: nil)
         
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
-        guard let detailVC = segue.destination as? DetailPostViewController else { return }
-        detailVC.imageUrl = stories[indexPath.item].url
-    }
-    
 }
 
 //MARK: - Private methods
 extension StoriesViewController {
     private func fetchThumbnails() {
         DispatchQueue.global().async {
-            for story in self.stories {
+            for story in self.storiesData.stories {
                 let url = self.createStoryUrl(story: story)
                 NetworkService.shared.fetchImage(urlString: url) { result in
                     DispatchQueue.main.async {

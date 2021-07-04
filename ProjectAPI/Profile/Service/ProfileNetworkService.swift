@@ -11,7 +11,7 @@ class ProfileNetworkService {
     
     private init() {}
     
-    static func fetchAccountInfo(username: String, with completion: @escaping (Result<Account, NetworkErrors>) -> Void) {
+    static func fetchAccountInfo(username: String, with completion: @escaping (Result<Account, NetworkError>) -> Void) {
         let urlString = MainApi.getUrlForAccountInfo(username: username)
         guard let url = URL(string: urlString) else {
             completion(.failure(.createUrlError))
@@ -37,7 +37,7 @@ class ProfileNetworkService {
         }
     }
     
-    static func fetchPosts(username: String, pageId: String, with completion: @escaping (Result<Posts, NetworkErrors>) -> Void) {
+    static func fetchPosts(username: String, pageId: String, with completion: @escaping (Result<Posts, NetworkError>) -> Void) {
         let urlString = MainApi.getUrlForAccountPosts(username: username)
         guard let url = URL(string: urlString) else {
             completion(.failure(.createUrlError))

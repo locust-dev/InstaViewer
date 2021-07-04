@@ -7,8 +7,8 @@
 
 struct StoriesData: Decodable {
     let profilePic: String?
-    let downloadLinks: [StoryData]?
     let totalStories: Int?
+    let downloadLinks: [StoryData]
 }
 
 struct StoryData: Decodable {

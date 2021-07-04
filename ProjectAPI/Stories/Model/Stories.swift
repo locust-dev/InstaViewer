@@ -12,15 +12,20 @@ struct Stories {
     let stories: [Story]
     
     init?(storiesData: StoriesData) {
-        self.profilePic = storiesData.profilePic ?? ""
-        self.totalStories = storiesData.totalStories ?? 0
-        self.stories = Story.getStories(storiesData: storiesData)
+        guard let profilePic = storiesData.profilePic,
+        let totalStories = storiesData.totalStories,
+        !storiesData.downloadLinks.isEmpty else { return nil }
+        
+        var loadedStories = [Story]()
+        for story in storiesData.downloadLinks {
+            guard let story = Story(storyData: story) else { continue }
+            loadedStories.append(story)
+        }
+        
+        self.stories = loadedStories
+        self.profilePic = profilePic
+        self.totalStories = totalStories
     }
-}
-
-enum StoryType {
-    case video
-    case image
 }
 
 struct Story {
@@ -28,22 +33,22 @@ struct Story {
     let mediaType: StoryType
     let url: String
     
-    static func getStories(storiesData: StoriesData) -> [Story] {
-        var newStories = [Story]()
-        guard let stories = storiesData.downloadLinks else { return [] }
-        for story in stories {
-            var type: StoryType {
-                switch story.mediaType {
-                case "image": return .image
-                default: return .video
-                }
-            }
-            
-            let newStory = Story(thumbnail: story.thumbnail ?? "",
-                                 mediaType: type,
-                                 url: story.url ?? "")
-            newStories.append(newStory)
+    init?(storyData: StoryData) {
+        guard let thumbnail = storyData.thumbnail,
+              let mediaType = storyData.mediaType,
+              let url = storyData.url else { return nil }
+        
+        switch mediaType {
+        case "video": self.mediaType = .video
+        default: self.mediaType = .image
         }
-        return newStories
+        
+        self.thumbnail = thumbnail
+        self.url = url
     }
+}
+
+enum StoryType {
+    case video
+    case image
 }

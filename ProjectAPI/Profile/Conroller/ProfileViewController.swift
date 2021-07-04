@@ -30,7 +30,7 @@ class ProfileViewController: UIViewController {
     var username: String? = "varlamov"
     
     private var account: Account?
-    private var stories: [Story]?
+    private var stories: Stories?
     private var hasNextPage: Bool?
     private var idForStories: Int?
     private var accountPosts = [Post]()
@@ -49,14 +49,14 @@ class ProfileViewController: UIViewController {
         if segue.identifier == "toStories" {
             guard let storiesVC = segue.destination as? StoriesViewController else { return }
             guard let stories = stories else { return }
-            storiesVC.stories = stories
-            storiesVC.username = account?.userName
+            storiesVC.storiesData = stories
+            storiesVC.username = account?.username
         } else if segue.identifier == "toDetail" {
             guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
             guard let detailVC = segue.destination as? DetailPostViewController else { return }
             guard !accountPosts.isEmpty else { return }
             detailVC.post = accountPosts[indexPath.item]
-            detailVC.username = account?.userName
+            detailVC.username = account?.username
             detailVC.avatar = account?.profileImage
         }
     }
@@ -109,11 +109,11 @@ extension ProfileViewController {
         ProfileNetworkService.fetchPosts(username: username, pageId: pageId) { result in
             switch result {
             case .success(let postsData):
-                guard let posts = postsData.posts else { return }
+                let posts = postsData.posts
                 self.accountPosts += posts
                 self.hasNextPage = postsData.hasNextPage
                 self.pageId = postsData.pageId
-                guard let posts = postsData.posts else { return }
+
                 for post in posts {
                     self.fetchPostImage(post: post)
                 }
@@ -131,8 +131,7 @@ extension ProfileViewController {
     }
     
     private func fetchPostImage(post: Post) {
-        guard let url = post.squarePostImage.first else { return }
-        NetworkService.shared.fetchImage(urlString: url) { result in
+        NetworkService.shared.fetchImage(urlString: post.squarePostImage) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):
@@ -164,31 +163,38 @@ extension ProfileViewController {
     
     private func fetchStories() {
         guard let id = idForStories else { return }
-        StoriesNetworkService.fetchStories(id: id) { stories in
-            self.stories = stories
-            DispatchQueue.main.async {
-                if !stories.isEmpty {
+        let url = StoriesApi.getUrlForStories(id: id)
+        StoriesNetworkService.fetchStories(url, id: id) { result in
+            switch result {
+            case .success(let stories):
+                self.stories = stories
+                DispatchQueue.main.async {
                     self.setupStoryBorder()
                     self.setupGestures()
                 }
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
     
     private func setupAccountUI(_ account: Account) {
         avatar.layer.cornerRadius = avatar.frame.height / 2
-        title = "\(account.userName)"
+        title = "\(account.username)"
         indicatorForInfo.stopAnimating()
         accountInfo.isHidden = false
         postsCount.text = account.postsCountString
-        followed.text = account.followedString
-        follow.text = account.followString
-        fullName.text = account.fullName
+        followed.text = account.followersString
+        follow.text = account.followingsString
+        fullName.text = account.fullname
         biography.text = account.biography
         website.text = account.website
         
         if account.isPrivate {
             self.isPrivateLabel.isHidden = false
+        } else if account.postsCount == 0 {
+            self.isPrivateLabel.isHidden = false
+            self.isPrivateLabel.text = "\(account.username) doesn't have any posts yet"
         } else {
             DispatchQueue.global().async {
                 self.fetchStories()

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NetworkErrors: Error {
+enum NetworkError: Error {
     case createUrlError
     case createRequestError
     case createImageFromDataError
@@ -15,9 +15,10 @@ enum NetworkErrors: Error {
     case loadDataFromRequestError
     case jsonDecodeError
     case createObjectError
+    case nullStories
 }
 
-extension NetworkErrors: LocalizedError {
+extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .createUrlError:
@@ -34,7 +35,8 @@ extension NetworkErrors: LocalizedError {
             return NSLocalizedString("Failed to decode JSON. Please make sure API key is valid or data model doesn't have any mistakes", comment: "")
         case .createObjectError:
             return NSLocalizedString("Failed to create entity from sucessed JSON data", comment: "")
-            
+        case .nullStories:
+            return NSLocalizedString("This user doesn't have any stories", comment: "")
         }
     }
 }

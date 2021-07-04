@@ -6,22 +6,22 @@
 //
 
 struct Account {
-    let userName: String
-    let fullName: String
+    let username: String
+    let fullname: String
     let biography: String
     let profileImage: String
     let id: Int
     let isPrivate: Bool
     let website: String
     
-    let followed: Int
-    var followedString: String {
-        return "\(followed)"
+    let followers: Int
+    var followersString: String {
+        return "\(followers)"
     }
     
-    let follow: Int
-    var followString: String {
-        return "\(follow)"
+    let followings: Int
+    var followingsString: String {
+        return "\(followings)"
     }
     
     let postsCount: Int
@@ -30,16 +30,23 @@ struct Account {
     }
     
     init?(accountData: AccountData) {
-        guard let username = accountData.data.userName else { return nil }
-        userName = username
-        fullName = accountData.data.fullName ?? "Null"
-        biography = accountData.data.biography ?? "Null"
-        profileImage = accountData.data.profileImage?.hd ?? "Null"
-        followed = accountData.data.figures?.followers ?? 0
-        follow = accountData.data.figures?.followings ?? 0
-        postsCount = accountData.data.figures?.posts ?? 0
-        id = accountData.data.id ?? 0
-        isPrivate = accountData.data.isPrivate ?? true
-        website = accountData.data.website ?? ""
+        guard let data = accountData.data,
+        let username = data.userName,
+        let id = data.id,
+        let profileImage = data.profileImage?.hd,
+        let postsCount = data.figures?.posts,
+        let isPrivate = data.isPrivate else { return nil }
+    
+        self.id = id
+        self.username = username
+        self.postsCount = postsCount
+        self.profileImage = profileImage
+        self.isPrivate = isPrivate
+        self.fullname = data.fullName ?? ""
+        self.biography = data.biography ?? ""
+        self.website = data.website ?? ""
+        self.followers = data.figures?.followers ?? 0
+        self.followings = data.figures?.followings ?? 0
     }
+    
 }

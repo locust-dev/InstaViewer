@@ -733,6 +733,29 @@
                                             <segue destination="obh-gx-9gY" kind="show" id="dzf-Fu-qOf"/>
                                         </connections>
                                     </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="indicatorCell" id="dCT-X3-f9U" customClass="IndicatorCell" customModule="ProjectAPI" customModuleProvider="target">
+                                        <rect key="frame" x="143" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="IJe-Gy-UNl">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="12H-gl-0HB">
+                                                    <rect key="frame" x="10" y="10" width="108" height="108"/>
+                                                    <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </activityIndicatorView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="12H-gl-0HB" firstAttribute="top" secondItem="IJe-Gy-UNl" secondAttribute="top" constant="10" id="0il-bz-T7y"/>
+                                                <constraint firstAttribute="bottom" secondItem="12H-gl-0HB" secondAttribute="bottom" constant="10" id="L2K-qx-vDC"/>
+                                                <constraint firstAttribute="trailing" secondItem="12H-gl-0HB" secondAttribute="trailing" constant="10" id="Nd5-qm-ERj"/>
+                                                <constraint firstItem="12H-gl-0HB" firstAttribute="leading" secondItem="IJe-Gy-UNl" secondAttribute="leading" constant="10" id="yHN-Qr-3SI"/>
+                                            </constraints>
+                                        </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="indicator" destination="12H-gl-0HB" id="LCN-GT-Oum"/>
+                                        </connections>
+                                    </collectionViewCell>
                                 </cells>
                                 <connections>
                                     <outlet property="dataSource" destination="XdO-04-H5X" id="vXF-pw-KUo"/>
@@ -740,19 +763,27 @@
                                 </connections>
                             </collectionView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="ndB-0l-kbE">
-                                <rect key="frame" x="154" y="111" width="106" height="37"/>
+                                <rect key="frame" x="154" y="130" width="106" height="37"/>
                                 <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Something went wrong" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4OO-HO-jNg">
+                                <rect key="frame" x="119.5" y="210" width="175.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dnz-Rp-jl9"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="4OO-HO-jNg" firstAttribute="centerX" secondItem="aTm-kS-2mh" secondAttribute="centerX" id="0B5-gx-Be4"/>
                             <constraint firstItem="DSv-Qj-eMi" firstAttribute="leading" secondItem="dnz-Rp-jl9" secondAttribute="leading" id="BEb-2G-659"/>
                             <constraint firstItem="dnz-Rp-jl9" firstAttribute="trailing" secondItem="ndB-0l-kbE" secondAttribute="trailing" constant="154" id="DQ2-BI-5dn"/>
                             <constraint firstItem="K8D-rY-wB6" firstAttribute="leading" secondItem="dnz-Rp-jl9" secondAttribute="leading" id="FLc-0k-Z3E"/>
                             <constraint firstItem="K8D-rY-wB6" firstAttribute="trailing" secondItem="dnz-Rp-jl9" secondAttribute="trailing" id="KH5-hF-huU"/>
                             <constraint firstItem="ndB-0l-kbE" firstAttribute="leading" secondItem="dnz-Rp-jl9" secondAttribute="leading" constant="154" id="Oru-dh-oNf"/>
-                            <constraint firstItem="ndB-0l-kbE" firstAttribute="top" secondItem="DSv-Qj-eMi" secondAttribute="bottom" constant="51" id="feS-cf-S7R"/>
+                            <constraint firstItem="4OO-HO-jNg" firstAttribute="top" secondItem="DSv-Qj-eMi" secondAttribute="bottom" constant="150" id="S7k-lT-77h"/>
+                            <constraint firstItem="ndB-0l-kbE" firstAttribute="top" secondItem="DSv-Qj-eMi" secondAttribute="bottom" constant="70" id="feS-cf-S7R"/>
                             <constraint firstItem="K8D-rY-wB6" firstAttribute="top" secondItem="DSv-Qj-eMi" secondAttribute="bottom" id="niV-n7-hsu"/>
                             <constraint firstItem="K8D-rY-wB6" firstAttribute="bottom" secondItem="aTm-kS-2mh" secondAttribute="bottom" id="tP6-UC-fkB"/>
                             <constraint firstItem="DSv-Qj-eMi" firstAttribute="top" secondItem="dnz-Rp-jl9" secondAttribute="top" id="vqp-Qj-GhW"/>
@@ -765,6 +796,7 @@
                         <outlet property="collectionView" destination="K8D-rY-wB6" id="il0-vT-eze"/>
                         <outlet property="indicator" destination="ndB-0l-kbE" id="W84-nV-oeF"/>
                         <outlet property="searchBar" destination="DSv-Qj-eMi" id="CWE-Yd-Cdz"/>
+                        <outlet property="wentWrong" destination="4OO-HO-jNg" id="WhS-Kb-09h"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rly-YP-yJg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -796,7 +828,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="bls-em-5gZ"/>
+        <segue reference="dzf-Fu-qOf"/>
         <segue reference="2CR-xY-HVM"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

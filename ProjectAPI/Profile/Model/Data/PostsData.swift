@@ -6,8 +6,8 @@
 //
 
 struct PostsData: Decodable {
-    let data: [PostData]?
-    let meta: Meta
+    let data: [PostData]
+    let meta: Meta?
 }
 
 struct PostData: Decodable {
@@ -29,7 +29,7 @@ struct PostData: Decodable {
 }
 
 struct CommentsData: Decodable {
-    let list: [CommentData]?
+    let list: [CommentData]
 }
 
 struct CommentData: Decodable {
@@ -55,8 +55,8 @@ struct PostVideos: Decodable {
 
 struct PostImage: Decodable {
     let original: OriginalImage?
-    let square: [String]?
-    let thumbnail: String?
+    let square: [String]
+    let thumbnail: String
 }
 
 struct OriginalImage: Decodable {

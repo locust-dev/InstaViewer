@@ -11,7 +11,7 @@ class SearchNetworkService {
     
     private init() {}
     
-    static func fetchSearchedUsers(username: String, completion: @escaping (Result<SearchResults, NetworkErrors>) -> Void) {
+    static func fetchSearchedUsers(username: String, completion: @escaping (Result<SearchResults, NetworkError>) -> Void) {
         guard let url = URL(string: MainApi.getUrlForSearch(username: username)) else {
             completion(.failure(.createUrlError))
             return

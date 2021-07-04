@@ -10,34 +10,40 @@ import Foundation
 class StoriesNetworkService {
     
     private init() {}
-    
-    static func createStoriesRequest(url: URL, with completion: @escaping (Data) -> Void) {
+
+    static func fetchStories(_ urlString: String, id: Int, with completion: @escaping (Result<Stories, NetworkError>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.createUrlError))
+            return
+        }
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = StoriesApi.storyHeaders
         
         URLSession.shared.dataTask(with: request) { data, _, error in
-            guard let data = data else {
-                print(error?.localizedDescription ?? "No description")
+            if let _ = error {
+                completion(.failure(.createRequestError))
                 return
             }
-            completion(data)
+            
+            if let data = data {
+                
+                do {
+                    let storiesData = try JSONDecoder().decode(StoriesData.self, from: data)
+                    guard let stories = Stories(storiesData: storiesData) else {
+                        completion(.failure(.nullStories))
+                        return
+                    }
+                    completion(.success(stories))
+                } catch let error {
+                    completion(.failure(.jsonDecodeError))
+                    print(error)
+                }
+            } else {
+                completion(.failure(.emptyDataFromRequest))
+            }
         }.resume()
+        
     }
     
-    static func fetchStories(id: Int, with completion: @escaping ([Story]) -> Void) {
-        guard let url = URL(string: StoriesApi.getUrlForStories(id: id)) else { return }
-        
-        createStoriesRequest(url: url) { data in
-            do {
-                let storiesData = try JSONDecoder().decode(StoriesData.self, from: data)
-                guard let stories = Stories(storiesData: storiesData) else {
-                    return
-                }
-                completion(stories.stories)
-            } catch let error {
-                print(error)
-            }
-        }
-    }
 }

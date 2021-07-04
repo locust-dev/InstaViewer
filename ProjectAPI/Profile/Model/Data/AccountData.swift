@@ -6,7 +6,7 @@
 //
 
 struct AccountData: Decodable {
-    let data: Info
+    let data: Info?
 }
 
 struct Info: Decodable {
