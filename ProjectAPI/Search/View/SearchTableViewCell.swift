@@ -44,7 +44,7 @@ class SearchTableViewCell: UITableViewCell {
         profileImage.layer.cornerRadius = profileImage.frame.height / 2
         deleteButton.isHidden = true
         profileUsername.text = searchedUser.username
-        profileDescription.text = searchedUser.extraDescription
+        profileDescription.text = searchedUser.extraInfo
     }
 }
 

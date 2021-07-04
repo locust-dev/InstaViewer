@@ -10,33 +10,31 @@ import Foundation
 struct SearchResults {
     let results: [SearchedUser]
     
-    init?(searchData: SearchResultsData) {
-        results = SearchedUser.getSearchedUsers(searchData: searchData)
-        if results.isEmpty {
-            return nil
+    init(searchData: SearchResultsData) {
+        var results = [SearchedUser]()
+        for user in searchData.data {
+            guard let user = SearchedUser(searchedUserData: user) else { continue }
+            results.append(user)
         }
+        
+        self.results = results
     }
 }
 
 struct SearchedUser {
     let id: Int
-    let extraDescription: String
+    let extraInfo: String
     let username: String
     let picture: String?
     
-    static func getSearchedUsers(searchData: SearchResultsData) -> [SearchedUser] {
-        var users = [SearchedUser]()
-        guard let usersData = searchData.data else { return users }
+    init?(searchedUserData: SearchedUserData) {
+        guard let id = searchedUserData.id,
+        let username = searchedUserData.username,
+        let picture = searchedUserData.picture else { return nil }
         
-        for user in usersData {
-            guard let username = user.username else { continue }
-            let newUser = SearchedUser(
-                id: user.id ?? 0,
-                extraDescription: user.fullname ?? "",
-                username: username,
-                picture: user.picture ?? nil)
-            users.append(newUser)
-        }
-        return users
+        self.id = id
+        self.username = username
+        self.picture = picture
+        self.extraInfo = searchedUserData.fullname ?? ""
     }
 }

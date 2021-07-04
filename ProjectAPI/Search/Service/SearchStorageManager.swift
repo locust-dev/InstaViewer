@@ -43,7 +43,7 @@ class SearchStorageManager {
         if isExist(username: user.username) { return }
         let newUser = ChoseSearchedUser(context: viewContext)
         newUser.username = user.username
-        newUser.userDescription = user.extraDescription
+        newUser.userDescription = user.extraInfo
         newUser.avatar = avatar
         completion(newUser)
         saveContext()

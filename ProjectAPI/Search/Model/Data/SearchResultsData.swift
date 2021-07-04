@@ -8,7 +8,7 @@
 import Foundation
 
 struct SearchResultsData: Decodable {
-    let data: [SearchedUserData]?
+    let data: [SearchedUserData]
 }
 
 struct SearchedUserData: Decodable {

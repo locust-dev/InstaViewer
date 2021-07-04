@@ -21,10 +21,7 @@ class SearchNetworkService {
             case .success(let data):
                 do {
                     let searchData = try JSONDecoder().decode(SearchResultsData.self, from: data)
-                    guard let results = SearchResults(searchData: searchData) else {
-                        completion(.failure(.createObjectError))
-                        return
-                    }
+                    let results = SearchResults(searchData: searchData)
                     completion(.success(results))
                 } catch let error {
                     print(error)
