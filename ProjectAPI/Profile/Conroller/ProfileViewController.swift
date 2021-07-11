@@ -27,7 +27,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var isPrivateLabel: UILabel!
     @IBOutlet weak var website: UILabel!
     
-    var username: String? = "varlamov"
+    var username: String? = MainApi.defaultUser
     
     private var account: Account?
     private var stories: Stories?
